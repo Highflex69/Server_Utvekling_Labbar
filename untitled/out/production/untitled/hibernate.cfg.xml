@@ -14,9 +14,9 @@
 
         <property name="cache.provider_class">org.hibernate.cache.internal.NoCachingRegionFactory</property>
         <property name="show_sql">true</property>
-        <property name="hbm2ddl.auto">create</property>
-        
-        <mapping class="BO.Student"/>
+        <property name="hbm2ddl.auto">update</property>
+        <mapping class="DB.DB_User"/>
+        <mapping class="DB.DB_Message"/>
         <!-- DB schema will be updated if needed -->
         <!-- <property name="hbm2ddl.auto">update</property> -->
     </session-factory>
