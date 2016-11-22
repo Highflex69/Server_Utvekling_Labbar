@@ -1,0 +1,20 @@
+<component name="ArtifactManager">
+  <artifact type="exploded-war" build-on-make="true" name="RESTful_services:war exploded">
+    <output-path>$PROJECT_DIR$/out/artifacts/RESTful_services_war_exploded</output-path>
+    <root id="root">
+      <element id="javaee-facet-resources" facet="RESTful_services/web/Web" />
+      <element id="directory" name="WEB-INF">
+        <element id="directory" name="classes">
+          <element id="module-output" name="RESTful_services" />
+        </element>
+        <element id="directory" name="lib">
+          <element id="library" level="project" name="jax-rs-jersey-1.12" />
+          <element id="library" level="project" name="com.sun.jersey:jersey-bundle:1.18.3" />
+          <element id="library" level="project" name="commons-digester:commons-digester:2.1" />
+          <element id="library" level="project" name="Maven: com.sun.jersey:jersey-bundle:1.18.3" />
+          <element id="library" level="project" name="Maven: javax.ws.rs:jsr311-api:1.1.1" />
+        </element>
+      </element>
+    </root>
+  </artifact>
+</component>

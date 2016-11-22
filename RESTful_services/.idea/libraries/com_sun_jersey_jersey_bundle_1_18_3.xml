@@ -1,0 +1,73 @@
+<component name="libraryTable">
+  <library name="com.sun.jersey:jersey-bundle:1.18.3" type="repository">
+    <properties maven-id="com.sun.jersey:jersey-bundle:1.18.3" />
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/lib/jersey-bundle-1.18.3.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/jsr311-api-1.1.1.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/jersey-grizzly-1.18.3.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/jersey-servlet-1.18.3.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/jersey-server-1.18.3.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/jersey-core-1.18.3.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/jersey-client-1.18.3.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/jersey-atom-1.18.3.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/rome-0.9.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/jdom-1.0.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/jersey-json-1.18.3.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/jettison-1.1.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/jaxb-impl-2.2.3-1.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/jaxb-api-2.1.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/stax-api-1.0-2.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/activation-1.1.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/jackson-core-asl-1.9.2.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/jackson-mapper-asl-1.9.2.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/jackson-jaxrs-1.9.2.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/jackson-xc-1.9.2.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/jersey-fastinfoset-1.18.3.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/FastInfoset-1.2.9.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/jsr173-1.0.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/persistence-api-1.0.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/mail-1.4.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/org.eclipse.persistence.moxy-2.3.2.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/org.eclipse.persistence.core-2.3.2.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/org.eclipse.persistence.asm-2.3.2.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/org.eclipse.persistence.antlr-2.3.2.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/javax.servlet-api-3.0.1.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/jsp-api-2.0.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/servlet-api-2.4.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/javax.ejb-3.1.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/javax.transaction-3.1.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/javax.annotation-3.1.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/weld-osgi-bundle-1.1.4.Final.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/cdi-api-1.0-SP4.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/jboss-interceptors-api_1.1_spec-1.0.0.Beta1.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/jsr250-api-1.0.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/javax.inject-1.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/weld-api-1.1.Final.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/weld-core-1.1.4.Final.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/weld-spi-1.1.Final.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/javassist-3.14.0-GA.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/guava-r06.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/jboss-interceptor-spi-2.0.0.CR1.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/jboss-interceptor-core-2.0.0.CR1.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/slf4j-api-1.5.10.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/slf4j-ext-1.5.10.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/cal10n-api-0.7.2.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/weld-build-config-1.1.4.Final.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/javassist-3.12.0.GA.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/ant-1.6.5.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/grizzly-servlet-webserver-1.9.45.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/grizzly-http-1.9.45.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/grizzly-framework-1.9.45.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/grizzly-utils-1.9.45.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/grizzly-lzma-1.9.45.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/grizzly-rcm-1.9.45.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/grizzly-portunif-1.9.45.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/grizzly-http-servlet-1.9.45.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/http-20070405.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/stax-api-1.0.1.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/org.osgi.core-4.2.0.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>
