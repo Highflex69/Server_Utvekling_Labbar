@@ -22,7 +22,7 @@ public class DB_Message {
     @ManyToOne()
     @JoinColumn(name = "C_SENDER_ID")
     private DB_User from;
-
+    @Column(name = "C_PRIVATE")
     private boolean isPrivate;
 
     public DB_Message() {}

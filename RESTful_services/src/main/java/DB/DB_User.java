@@ -7,10 +7,6 @@ import javax.persistence.*;
 /**
  * Created by Teddy on 2016-11-21.
  */
-@NamedQueries({
-        @NamedQuery(name = "DB_User.findAll", query =  "SELECT u FROM DB_User u"),
-        @NamedQuery(name = "DB_User.findById", query = "SELECT u FROM DB_User u WHERE u.id = :id"),
-        @NamedQuery(name = "DB_User.findByName", query = "SELECT u FROM DB_User u WHERE u.name = :name")})
 @Entity
 @Table(name = "T_USER")
 public class DB_User {
@@ -19,14 +15,14 @@ public class DB_User {
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "C_ID")
     private int id;
-    @NotNull
-    @Column( name = "C_NAME")
+
+    @Column( name = "C_NAME", nullable = false)
     private String name;
-    @NotNull
-    @Column(name = "C_USERNAME", unique = true)
+
+    @Column(name = "C_USERNAME", unique = true, nullable = false)
     private String username;
-    @NotNull
-    @Column( name = "C_PASSWORD")
+
+    @Column( name = "C_PASSWORD", nullable = false)
     private String password;
 
     public DB_User(String name, String username, String password)
