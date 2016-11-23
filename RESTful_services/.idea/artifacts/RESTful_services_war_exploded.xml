@@ -8,12 +8,11 @@
           <element id="module-output" name="RESTful_services" />
         </element>
         <element id="directory" name="lib">
-          <element id="library" level="project" name="jax-rs-jersey-1.12" />
-          <element id="library" level="project" name="com.sun.jersey:jersey-bundle:1.18.3" />
+          <element id="library" level="project" name="com.sun.jersey:jersey-bundle:1.19.3" />
           <element id="library" level="project" name="commons-digester:commons-digester:2.1" />
-          <element id="library" level="project" name="Maven: com.sun.jersey:jersey-bundle:1.18.3" />
           <element id="library" level="project" name="Maven: javax.ws.rs:jsr311-api:1.1.1" />
           <element id="library" level="project" name="Hibernate 5.2.3-5.2.3" />
+          <element id="library" level="project" name="mysql-connector-java-5.1" />
         </element>
       </element>
     </root>
