@@ -40,10 +40,6 @@ public class DB_User {
         return id;
     }
 
-    public void setId(int id) {
-        this.id = id;
-    }
-
 
     public String getName() {
         return name;
@@ -71,22 +67,4 @@ public class DB_User {
         this.password = password;
     }
 
-
-
-    public static DB_User findByName(String name)
-    {
-        EntityManagerFactory emf =
-                Persistence.createEntityManagerFactory("TestPU");
-        EntityManager em = emf.createEntityManager();
-
-        //search with username
-
-        DB_User user =  (DB_User) em.createQuery(
-                "from DB_User user where user.name = :searchString")
-                .setParameter("searchString", name)
-                .getSingleResult();
-        em.close();
-        emf.close();
-        return user;
-    }
 }

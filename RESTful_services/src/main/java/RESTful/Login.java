@@ -3,6 +3,7 @@ package RESTful;
 import DB.DB_Manager;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 
 
 /**
@@ -16,15 +17,15 @@ public class Login {
     @POST()
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
-    public String verifyUserLogin(@FormParam("username") String username,
-                               @FormParam("password") String password)
+    public Response verifyUserLogin(@FormParam("username") String username,
+                                    @FormParam("password") String password)
     {
         DB_Manager databaseManager = new DB_Manager();
         boolean result = databaseManager.verifyUser(username, password);
         if(result)
         {
-            return RESULT_SUCCESS;
+            return Response.status(201).entity(RESULT_SUCCESS).build();
         }
-        return RESULT_FAILURE;
+        return Response.status(403).entity(RESULT_FAILURE).build();
     }
 }
