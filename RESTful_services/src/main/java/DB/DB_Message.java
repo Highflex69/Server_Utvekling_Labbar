@@ -11,6 +11,7 @@ public class DB_Message {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
+    @Column(name = "C_ID")
     private int id;
     @Column(name = "C_TITLE", length = 50)
     private String title;
@@ -24,8 +25,11 @@ public class DB_Message {
     private DB_User from;
     @Column(name = "C_PRIVATE")
     private boolean isPrivate;
+    @Column(name = "C_UNREAD")
+    private boolean isRead;
 
     public DB_Message() {}
+
     public DB_Message(String title, String content, DB_User from, DB_User to)
     {
         this.title = title;
@@ -33,6 +37,7 @@ public class DB_Message {
         this.to = to;
         this.from = from;
         this.isPrivate = false;
+        this.isRead = false;
     }
     public DB_Message(String title, String content, DB_User from, DB_User to, boolean isPrivate)
     {
@@ -41,8 +46,38 @@ public class DB_Message {
         this.to = to;
         this.from = from;
         this.isPrivate = isPrivate;
+        this.isRead = false;
     }
 
+
+    public String getTitle() {
+        return title;
+    }
+
+    public String getContent() {
+        return content;
+    }
+
+    public DB_User getTo() {
+        return to;
+    }
+
+    public DB_User getFrom() {
+        return from;
+    }
+
+    public boolean isPrivate() {
+        return isPrivate;
+    }
+
+    public boolean isRead() {
+        return isRead;
+    }
+
+    public void setReaded()
+    {
+        this.isRead = true;
+    }
 
     public int getId() {
         return id;

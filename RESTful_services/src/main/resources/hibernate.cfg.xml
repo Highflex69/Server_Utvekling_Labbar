@@ -4,7 +4,7 @@
         "http://www.hibernate.org/dtd/hibernate-configuration-3.0.dtd">
 <hibernate-configuration>
     <session-factory>
-        <property name="connection.url">jdbc:mysql://130.229.177.217/db_serverutveckling</property>
+        <property name="connection.url">jdbc:mysql://130.229.176.13/db_serverutveckling</property>
         <property name="connection.driver_class">com.mysql.jdbc.Driver</property>
         <property name="connection.username">serverutveckling</property>
         <property name="connection.password">carlos</property>
@@ -17,6 +17,7 @@
         <property name="hbm2ddl.auto">update</property>
         <mapping class="DB.DB_User"/>
         <mapping class="DB.DB_Message"/>
+        <mapping class="DB.DB_Post"/>
         <!-- DB schema will be updated if needed -->
         <!-- <property name="hbm2ddl.auto">update</property> -->
     </session-factory>

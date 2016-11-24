@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <component name="dataSourceStorage">
-  <data-source name="MySQL - db_serverutveckling@130.229.177.217" uuid="81f3405d-b73b-4584-96e9-ea05023013be">
+  <data-source name="MySQL - db_serverutveckling@130.229.176.13" uuid="81f3405d-b73b-4584-96e9-ea05023013be">
     <database-info product="MySQL" version="5.7.9-log" jdbc-version="4.0" driver-name="MySQL Connector Java" driver-version="mysql-connector-java-5.1.35 ( Revision: 5fb9c5849535c13917c2cf9baaece6ef9693ef27 )">
       <extra-name-characters>#@</extra-name-characters>
       <identifier-quote-string>`</identifier-quote-string>
@@ -34,53 +34,56 @@
       <column id="11" parent="3" name="C_RECIEVER_ID">
         <data-type>int(11)</data-type>
       </column>
-      <index id="12" parent="3" name="FK34u9ksmcb5lywesixkm21k8f1">
+      <column id="12" parent="3" name="C_PRIVATE">
+        <data-type>bit(1)</data-type>
+      </column>
+      <index id="13" parent="3" name="FK34u9ksmcb5lywesixkm21k8f1">
         <columns>C_SENDER_ID</columns>
         <desc-columns></desc-columns>
       </index>
-      <index id="13" parent="3" name="FKs4jbke1ugvnrh0bomax5qc29t">
+      <index id="14" parent="3" name="FKs4jbke1ugvnrh0bomax5qc29t">
         <columns>C_RECIEVER_ID</columns>
         <desc-columns></desc-columns>
       </index>
-      <key id="14" parent="3" name="PRIMARY">
+      <key id="15" parent="3" name="PRIMARY">
         <columns>id</columns>
         <primary>1</primary>
       </key>
-      <foreign-key id="15" parent="3" name="FK34u9ksmcb5lywesixkm21k8f1">
+      <foreign-key id="16" parent="3" name="FK34u9ksmcb5lywesixkm21k8f1">
         <columns>C_SENDER_ID</columns>
         <ref-key>~.t_user.PRIMARY</ref-key>
         <cascade-update-rule>restrict</cascade-update-rule>
         <cascade-delete-rule>restrict</cascade-delete-rule>
       </foreign-key>
-      <foreign-key id="16" parent="3" name="FKs4jbke1ugvnrh0bomax5qc29t">
+      <foreign-key id="17" parent="3" name="FKs4jbke1ugvnrh0bomax5qc29t">
         <columns>C_RECIEVER_ID</columns>
         <ref-key>~.t_user.PRIMARY</ref-key>
         <cascade-update-rule>restrict</cascade-update-rule>
         <cascade-delete-rule>restrict</cascade-delete-rule>
       </foreign-key>
-      <column id="17" parent="4" name="C_ID">
+      <column id="18" parent="4" name="C_ID">
         <mandatory>1</mandatory>
         <data-type>int(11)</data-type>
       </column>
-      <column id="18" parent="4" name="C_NAME">
+      <column id="19" parent="4" name="C_NAME">
         <data-type>varchar(255)</data-type>
       </column>
-      <column id="19" parent="4" name="C_PASSWORD">
+      <column id="20" parent="4" name="C_PASSWORD">
         <data-type>varchar(255)</data-type>
       </column>
-      <column id="20" parent="4" name="C_USERNAME">
+      <column id="21" parent="4" name="C_USERNAME">
         <data-type>varchar(255)</data-type>
       </column>
-      <index id="21" parent="4" name="UK_ijnm8hyplavljmeb0cu7nkf9b">
+      <index id="22" parent="4" name="UK_ijnm8hyplavljmeb0cu7nkf9b">
         <columns>C_USERNAME</columns>
         <desc-columns></desc-columns>
         <unique>1</unique>
       </index>
-      <key id="22" parent="4" name="PRIMARY">
+      <key id="23" parent="4" name="PRIMARY">
         <columns>C_ID</columns>
         <primary>1</primary>
       </key>
-      <key id="23" parent="4" name="UK_ijnm8hyplavljmeb0cu7nkf9b">
+      <key id="24" parent="4" name="UK_ijnm8hyplavljmeb0cu7nkf9b">
         <columns>C_USERNAME</columns>
         <underlying-index>UK_ijnm8hyplavljmeb0cu7nkf9b</underlying-index>
       </key>

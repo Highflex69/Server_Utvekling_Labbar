@@ -2,11 +2,17 @@ package RESTful;
 
 import DB.DB_Manager;
 import DB.DB_User;
+import org.codehaus.jettison.json.JSONException;
+import org.codehaus.jettison.json.JSONObject;
+import org.codehaus.jettison.json.JSONStringer;
 import org.codehaus.jettison.json.JSONWriter;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 import java.io.FileWriter;
+
+import static jdk.nashorn.internal.objects.NativeDate.toJSON;
 
 /**
  * Created by Teddy on 2016-11-23.
@@ -19,72 +25,30 @@ public class MyPage {
     @POST()
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
-    public JSONWriter getPersonalInfo(@FormParam("username") String username,
-                                  @FormParam("password") String password)
+    public Response getPersonalInfo(@FormParam("username") String username,
+                                    @FormParam("password") String password)
     {
+        System.out.println("in getPersonalInfo");
         DB_Manager databaseManager = new DB_Manager();
         DB_User user = databaseManager.getUserByNameAndPassword(username, password);
 
         if(user != null)
         {
-            String name = user.getName();
-            String mail = null;
-            String lastTimeLogIn = null;
-
-            JSONWriter jsonWriter = null;
-            try{
-                jsonWriter = new JSONWriter(new FileWriter("test.json"));
-                //start main object:
-                jsonWriter.object();    // name : value
-                    jsonWriter.key("status"); // name :
-                    jsonWriter.value(RESULT_SUCCESS); // : value
-                jsonWriter.endObject();
-                return jsonWriter;
-            }
-            catch (Exception e){e.printStackTrace();}
+            System.out.println("user is not null");
+            StringBuilder result = new StringBuilder();
+            result.append("status:" + RESULT_SUCCESS+"\n");
+            result.append("id:" + user.getId()+"\n");
+            result.append("name:" + user.getName()+"\n");
+            result.append("username:" + user.getUsername()+"\n");
+            result.append("password:" + user.getPassword());
+            result.append("noOfUnreadMessages:" + 10);
+            return Response.status(200).entity(result.toString()).build();
         }
         else
         {
-            JSONWriter result = null;
-            try{
-                result  = new JSONWriter(new FileWriter("result.json"));
-                result.object();
-                result.key("status");
-                result.value(RESULT_FAILURE);
-                result.endObject();
-                return result;
-            }catch (Exception  e){e.printStackTrace();}
+            System.out.println("user is null");
+            String fail = "status : " + RESULT_FAILURE;
+            return Response.status(403).entity(fail).build();
         }
-        return null;
     }
-
-    /*
-    jsonWriter.endObject();
-                    //end object:
-                    //start object:
-                    jsonWriter.object();
-                    jsonWriter.key("personal info");
-                    //start array:
-                    jsonWriter.array();
-                        jsonWriter.object(); //start object:
-                        jsonWriter.key("name");
-                        jsonWriter.value(user.getName());
-                        jsonWriter.endObject(); //end object:
-
-                        jsonWriter.object(); //start object:
-                        jsonWriter.key("password");
-                        jsonWriter.value(user.getPassword());
-                        jsonWriter.endObject(); //end object:
-
-                        jsonWriter.object(); //start object:
-                        jsonWriter.key("username");
-                        jsonWriter.value(user.getUsername());
-                        jsonWriter.endObject(); //end object:
-                    jsonWriter.endArray();
-                    jsonWriter.endObject();
-                    //end object:
-
-     */
-
-
 }

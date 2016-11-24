@@ -9,12 +9,13 @@ http://java.sun.com/xml/ns/persistence/persistence_1_0.xsd"
         <provider>org.hibernate.jpa.HibernatePersistenceProvider</provider>
         <class>DB.DB_User</class>
         <class>DB.DB_Message</class>
+        <class>DB.DB_Post</class>
         <exclude-unlisted-classes>false</exclude-unlisted-classes>
         <properties>
             <property name="hibernate.connection.username" value="serverutveckling"/>
             <property name="hibernate.connection.driver_class" value="com.mysql.jdbc.Driver"/>
             <property name="hibernate.connection.password" value="carlos"/>
-            <property name="hibernate.connection.url" value="jdbc:mysql://130.229.177.217/db_serverutveckling"/>
+            <property name="hibernate.connection.url" value="jdbc:mysql://130.229.176.13/db_serverutveckling"/>
             <property name="hibernate.cache.provider_class"
                       value="org.hibernate.cache.internal.NoCachingRegionFactory"/>
         </properties>
