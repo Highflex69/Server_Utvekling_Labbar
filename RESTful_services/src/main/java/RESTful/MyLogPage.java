@@ -4,6 +4,8 @@ import DB.DB_Manager;
 import DB.DB_User;
 import Hibernate.DTO_Log;
 import Hibernate.DTO_Post;
+import Hibernate.DTO_User;
+import com.google.gson.Gson;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
@@ -19,35 +21,38 @@ public class MyLogPage {
     private static final String RESULT_FAILURE="fail";
 
     @POST()
+    @Path("/GetLog")
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
-    public Response getMyLogs(@FormParam("username") String username,
-                                    @FormParam("password") String password,
-                              @FormParam("id") int id)
+    public Response getMyLog(@FormParam("username") String username,
+                                    @FormParam("password") String password)
     {
+        System.out.println("username= " +username + " password= " + password);
         DB_Manager databaseManager = new DB_Manager();
-        boolean result = databaseManager.verifyUser(username, password);
-        if(result)
+        DTO_User user = databaseManager.getUserByNameAndPassword(username, password);
+        if(user !=null)
         {
-            DTO_Log logList = databaseManager.getLogsById(id);
+            DTO_Log logList = databaseManager.getLogsById(user.getId());
             if(logList != null)
             {
-                return Response.status(200).entity(logList).build();
+                return Response.status(200).entity(new Gson().toJson(logList)).build();
             }
         }
         return Response.status(403).entity(null).build();
     }
 
     @PUT()
+    @Path("/CreateLog")
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
     public Response createLogByUser(@FormParam("username") String username,
                                         @FormParam("password") String password,
-                                        @FormParam("id") int id,
                                         @FormParam("content") String content)
     {
+        System.out.println("username= " +username + " password= " + password + " content: " + content);
         DB_Manager databaseManager = new DB_Manager();
-        DB_User verifyUser = databaseManager.getUserByNameAndPassword(username, password);
+        System.out.println();
+        DTO_User verifyUser = databaseManager.getUserByNameAndPassword(username, password);
         if(verifyUser != null)
         {
             boolean result = databaseManager.addLogByUser(content, verifyUser);
@@ -57,6 +62,6 @@ public class MyLogPage {
             }
         }
 
-        return Response.status(200).entity(RESULT_FAILURE).build();
+        return Response.status(403).entity(RESULT_FAILURE).build();
     }
 }

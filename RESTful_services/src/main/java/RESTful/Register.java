@@ -25,8 +25,7 @@ public class Register {
                                  @FormParam("password") String password) throws IOException
     {
         System.out.println("in regisdterUSET!!");
-        DB_User newUser = new DB_User(name, username, password);
-        int result = new DB_Manager().addUser(newUser);
+        int result = new DB_Manager().addUser(name, username, password);
         System.out.println("result = "+result);
         if(result == 1)
         {

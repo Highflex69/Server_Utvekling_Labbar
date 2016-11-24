@@ -1,6 +1,9 @@
 package RESTful;
 
 import DB.DB_Manager;
+import Hibernate.DTO_User;
+import com.google.gson.Gson;
+
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
@@ -20,11 +23,15 @@ public class Login {
     public Response verifyUserLogin(@FormParam("username") String username,
                                     @FormParam("password") String password)
     {
+        System.out.println("username= " +username + " password= " + password);
         DB_Manager databaseManager = new DB_Manager();
-        boolean result = databaseManager.verifyUser(username, password);
-        if(result)
+        DTO_User user = databaseManager.getUserByNameAndPassword(username, password);
+        if(user != null)
         {
-            return Response.status(201).entity(RESULT_SUCCESS).build();
+            Gson gson = new Gson();
+            String userStr = gson.toJson(user);
+            System.out.println(userStr);
+            return Response.status(200).entity(userStr).build();
         }
         return Response.status(403).entity(RESULT_FAILURE).build();
     }

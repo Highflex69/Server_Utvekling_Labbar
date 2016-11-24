@@ -21,6 +21,8 @@ public class DB_Post {
     @JoinColumn(name = "C_LOG_AUTHORID")
     private DB_User authorId;
 
+    public  DB_Post(){}
+
     public DB_Post(String content, DB_User author)
     {
         this.content = content;

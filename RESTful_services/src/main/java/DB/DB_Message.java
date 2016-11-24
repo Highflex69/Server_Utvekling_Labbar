@@ -13,19 +13,22 @@ public class DB_Message {
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "C_ID")
     private int id;
+
     @Column(name = "C_TITLE", length = 50)
     private String title;
+
     @Column(name = "C_CONTENT", columnDefinition = "TEXT")
     private String content;
+
     @ManyToOne()
     @JoinColumn(name = "C_RECIEVER_ID")
     private DB_User to;
+
     @ManyToOne()
     @JoinColumn(name = "C_SENDER_ID")
     private DB_User from;
-    @Column(name = "C_PRIVATE")
-    private boolean isPrivate;
-    @Column(name = "C_UNREAD")
+
+    @Column(name = "C_IS_READ")
     private boolean isRead;
 
     public DB_Message() {}
@@ -36,16 +39,6 @@ public class DB_Message {
         this.content = content;
         this.to = to;
         this.from = from;
-        this.isPrivate = false;
-        this.isRead = false;
-    }
-    public DB_Message(String title, String content, DB_User from, DB_User to, boolean isPrivate)
-    {
-        this.title = title;
-        this.content = content;
-        this.to = to;
-        this.from = from;
-        this.isPrivate = isPrivate;
         this.isRead = false;
     }
 
@@ -64,10 +57,6 @@ public class DB_Message {
 
     public DB_User getFrom() {
         return from;
-    }
-
-    public boolean isPrivate() {
-        return isPrivate;
     }
 
     public boolean isRead() {

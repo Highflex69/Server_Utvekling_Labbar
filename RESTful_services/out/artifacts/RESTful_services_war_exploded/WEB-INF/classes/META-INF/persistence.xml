@@ -9,6 +9,7 @@ http://java.sun.com/xml/ns/persistence/persistence_1_0.xsd"
         <provider>org.hibernate.jpa.HibernatePersistenceProvider</provider>
         <class>DB.DB_User</class>
         <class>DB.DB_Message</class>
+        <class>DB.DB_Post</class>
         <exclude-unlisted-classes>false</exclude-unlisted-classes>
         <properties>
             <property name="hibernate.connection.username" value="serverutveckling"/>

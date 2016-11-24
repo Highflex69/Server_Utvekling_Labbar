@@ -17,6 +17,7 @@
         <property name="hbm2ddl.auto">update</property>
         <mapping class="DB.DB_User"/>
         <mapping class="DB.DB_Message"/>
+        <mapping class="DB.DB_Post"/>
         <!-- DB schema will be updated if needed -->
         <!-- <property name="hbm2ddl.auto">update</property> -->
     </session-factory>
