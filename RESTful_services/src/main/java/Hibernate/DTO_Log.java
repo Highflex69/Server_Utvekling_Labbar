@@ -1,5 +1,7 @@
 package Hibernate;
 
+import com.google.gson.Gson;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 
@@ -14,14 +16,14 @@ public class DTO_Log implements Serializable {
         postList = new ArrayList<DTO_Post>();
     }
 
-    public ArrayList<DTO_Post> getPostList()
-    {
-        return postList;
-    }
-
     public void addPost(DTO_Post post)
     {
         postList.add(post);
+    }
+
+    public ArrayList<DTO_Post> getPostList()
+    {
+        return postList;
     }
 
 }

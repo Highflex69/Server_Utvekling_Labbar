@@ -10,9 +10,9 @@ import java.io.Serializable;
 public class DTO_Post implements Serializable{
     private int id;
     private String content;
-    private DB_User author;
+    private int author;
 
-    public DTO_Post(int id, String content, DB_User author)
+    public DTO_Post(int id, String content, int author)
     {
         this.id = id;
         this.content = content;
@@ -27,7 +27,7 @@ public class DTO_Post implements Serializable{
         return content;
     }
 
-    public DB_User getAuthor() {
+    public int getAuthor() {
         return author;
     }
 }
