@@ -63,9 +63,36 @@ public class MessagePage {
             DTO_Messages msgList = databaseManager.getMessagesByUserId(user.getId());
             if(msgList != null)
             {
-                return Response.status(200).entity(new Gson().toJson(msgList)).build();
+                System.out.println("response in GetMessages: " + msgList.getMessagesList().toString());
+                Gson gson = new Gson();
+                return Response.status(200).entity(gson.toJson(msgList)).build();
             }
         }
         return Response.status(403).entity(null).build();
     }
+
+    @POST()
+    @Path("/ReadMessage")
+    @Produces(MediaType.APPLICATION_JSON)
+    @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
+    public Response setMessageRead(@FormParam("username") String username,
+                             @FormParam("password") String password,
+                             @FormParam("messageId") String id)
+    {
+        System.out.println("username= " +username + " password= " + password + "messageID = " + id);
+        DB_Manager databaseManager = new DB_Manager();
+        DTO_User user = databaseManager.getUserByNameAndPassword(username, password);
+        if(user !=null)
+        {
+            boolean result = databaseManager.setReadToMessageById(Integer.parseInt(id));
+            if(result)
+            {
+                System.out.println("set message " + id + " to read is successful");
+                return Response.status(200).entity(RESULT_SUCCESS).build();
+            }
+        }
+        return Response.status(200).entity(RESULT_FAILURE).build();
+    }
+
+
 }

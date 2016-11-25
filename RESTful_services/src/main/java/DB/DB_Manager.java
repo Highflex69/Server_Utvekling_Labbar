@@ -126,6 +126,17 @@ public class DB_Manager {
         return userToReturn;
     }
 
+    public DTO_User getUserDTOByUsername(String username)
+    {
+        DB_User user = getUserByUsername(username);
+        DTO_User foundUser = null;
+        if(user != null)
+        {
+            foundUser = new DTO_User(user.getId(), user.getName(), user.getUsername(), getNoOfUnreadMessagesByUser(user));
+        }
+        return foundUser;
+    }
+
     private DB_User getUserByUsername(String username)
     {
         System.out.println("get user by username");
@@ -156,7 +167,6 @@ public class DB_Manager {
         }catch (Exception e) {e.printStackTrace();}
         finally
         {
-
             session.close();
             em.close();
             emf.close();
@@ -213,6 +223,7 @@ public class DB_Manager {
             {
                 em = emf.createEntityManager();
             }
+
             List<DB_Message> msgList;
             if(!session.getTransaction().isActive())
             {
@@ -237,6 +248,44 @@ public class DB_Manager {
         return messages;
     }
 
+    private DB_Message getMessageById(int id) {
+
+        DB_Message message = null;
+        try{
+            if(!session.isOpen())
+            {
+                session = HibernateUtil.getSessionFactory().openSession();
+            }
+            if(!emf.isOpen())
+            {
+                emf = Persistence.createEntityManagerFactory("TestPU");
+            }
+            if(!em.isOpen())
+            {
+                em = emf.createEntityManager();
+            }
+
+
+            if(!session.getTransaction().isActive())
+            {
+                session.beginTransaction();
+            }
+
+            message = (DB_Message) em.createQuery(
+                    "from DB_Message msg where msg.from.id = :searchId")
+                    .setParameter("searchId", id)
+                    .getSingleResult();
+            return message;
+        }catch (Exception e){e.printStackTrace();}
+        finally {
+
+            session.close();
+            em.close();
+            emf.close();
+        }
+        return message;
+    }
+
     private int getNoOfUnreadMessagesByUser(DB_User user)
     {
         DTO_Messages messageList = getMessagesByUserId(user.getId());
@@ -251,5 +300,40 @@ public class DB_Manager {
         }
 
         return amount;
+    }
+
+    public boolean setReadToMessageById(int readToMessageById) {
+
+        boolean result = false;
+        try
+        {
+            if(!session.isOpen())
+            {
+                session = HibernateUtil.getSessionFactory().openSession();
+            }
+            if(!emf.isOpen())
+            {
+                emf = Persistence.createEntityManagerFactory("TestPU");
+            }
+            if(!em.isOpen())
+            {
+                em = emf.createEntityManager();
+            }
+            if(!session.getTransaction().isActive())
+            {
+                session.beginTransaction();
+            }
+            DB_Message message = getMessageById(readToMessageById);
+            message.setRead();
+            session.saveOrUpdate(message);
+            result = true;
+        }
+        catch (Exception e){e.printStackTrace();}
+        finally {
+            session.close();
+            em.close();
+            emf.close();
+        }
+        return result;
     }
 }

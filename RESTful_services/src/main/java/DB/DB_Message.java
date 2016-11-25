@@ -63,7 +63,7 @@ public class DB_Message {
         return isRead;
     }
 
-    public void setReaded()
+    public void setRead()
     {
         this.isRead = true;
     }
