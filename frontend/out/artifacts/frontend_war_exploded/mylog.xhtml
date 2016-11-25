@@ -7,6 +7,16 @@
       xmlns:f="http://xmlns.jcp.org/jsf/core">
 
     <body>
+        <h:outputLabel value="#{userBean.menu}" escape="false"/>
+        <br />
+        <h:form>
+            Content:
+            <h:inputText id="inputUsername" value="#{userBean.logBean.content}">
+            </h:inputText>
+            <br/>
+            <h:commandButton id="knapp" value="Create" action="#{userBean.createLog}"/>
+        </h:form>
+        <br />
         <h:outputLabel value="#{userBean.myLog}" escape="false" />
     </body>
 </html>

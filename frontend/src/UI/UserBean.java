@@ -1,10 +1,7 @@
 package UI;
 
 import BO.UserHandler;
-import DTO.DTO_Log;
-import DTO.DTO_Message;
-import DTO.DTO_Post;
-import DTO.DTO_User;
+import DTO.*;
 import com.google.gson.Gson;
 
 import java.io.*;
@@ -14,12 +11,13 @@ import java.util.ArrayList;
 import java.util.Collection;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
+import javax.faces.context.FacesContext;
 
 @ManagedBean
 @SessionScoped
 public class UserBean {
 
-    public static final String urlpath = "http://130.229.170.250:8080";
+    public static final String urlpath = "http://130.229.136.133:8080";
 
     private int id;
     private String username;
@@ -27,6 +25,7 @@ public class UserBean {
     private String name;
     private DetailsBean detailsBean;
     private LogBean logBean;
+    private MenuView menuView;
 
     public MessageBean getMessageBean() {
         return messageBean;
@@ -69,6 +68,7 @@ public class UserBean {
         detailsBean = new DetailsBean();
         logBean = new LogBean();
         messageBean = new MessageBean();
+        menuView = new MenuView();
     }
 
     public String getUsername() {
@@ -199,6 +199,7 @@ public class UserBean {
 
                     if(myself != null){
                         detailsBean.setId(myself.getId());
+                        menuView.setMyId(myself.getId());
                         detailsBean.setName(myself.getName());
                         detailsBean.setUsername(myself.getUsername());
                         detailsBean.setNoOfUnreadMessages(myself.getNoOfUnreadMessages());
@@ -434,5 +435,131 @@ public class UserBean {
     public String getMyName() {
         return detailsBean.getName();
     }
+
+    /**
+     *  Navigation-menu
+     */
+    public String getMenu() {
+        return menuView.getNavigationMenu();
+    }
+
+    /**
+     * Load DTO items from backend and present to UI presented in HTML code
+     */
+
+    /**
+     * Get all messages belonging to user
+     */
+    public String getMessages() {
+        //Return to ui
+        String messages = "";
+
+        //Download messages from backend
+        DTO_Messages messageList = null;
+        InputStream inputStream = null;
+        BufferedReader br = null;
+        try {
+            URL url = new URL(urlpath +"/MessagePage/GetMessages");
+            HttpURLConnection httpCon = (HttpURLConnection) url.openConnection();
+            httpCon.setDoOutput(true);
+            httpCon.setRequestMethod("POST");
+
+            OutputStreamWriter out = new OutputStreamWriter(
+                    httpCon.getOutputStream());
+
+            out.write("username=" +username +"&password=" +password);
+            out.close();
+
+            int responseCode = httpCon.getResponseCode();
+            System.out.println("Responsecode: " +responseCode);
+
+            inputStream = httpCon.getInputStream();
+            br = null;
+            switch(responseCode) {
+                case 200:
+                    br = new BufferedReader(new InputStreamReader(inputStream));
+                    String line = br.readLine();
+                    if(line != null) {
+                        Gson gson = new Gson();
+                        messageList = gson.fromJson(line, DTO_Messages.class);
+                        System.out.println("Messages received, size: " +messageList.getMessagesList().size());
+                    }
+                    break;
+            }
+        }catch (Exception e) {
+
+            e.printStackTrace();
+        }
+        finally {
+            if(br != null) { try{br.close();} catch (Exception e){} }
+            if(inputStream != null) try{inputStream.close();} catch (Exception e){}
+        }
+
+        //Parse message list to html and return
+        messages = messageBean.parseListToXhtml(messageList);
+        return messages;
+    }
+
+    /**
+     * Read a message (downloaded by getMessages) post update for "isRead"-variable to backend if message was not
+     * previously read.
+     */
+    public String getMessage() {
+        FacesContext context = FacesContext.getCurrentInstance();
+        String id = context.getExternalContext().getRequestParameterMap().get("id");
+        String messageBody = "";
+        int messageId = -1;
+        try {
+            messageId = Integer.parseInt(id);
+
+        }catch (Exception e) {
+            return "Error: id is not a integer.";
+        }
+
+        DTO_Message readMessage = messageBean.getMessage(messageId);
+        if(readMessage == null) {
+            return "Error: message with id not found";
+        }
+
+        if(!readMessage.isRead()) {
+            readMessage.setRead();
+            try {
+                InputStream inputStream = null;
+                BufferedReader br = null;
+                URL url = new URL(urlpath + "/MessagePage/ReadMessage");
+                HttpURLConnection httpCon = (HttpURLConnection) url.openConnection();
+                httpCon.setDoOutput(true);
+                httpCon.setRequestMethod("POST");
+
+                OutputStreamWriter out = new OutputStreamWriter(
+                        httpCon.getOutputStream());
+
+                out.write("username=" + username + "&password=" + password +"&messageId=" +messageId);
+                out.close();
+
+                int responseCode = httpCon.getResponseCode();
+                System.out.println("Responsecode: " + responseCode);
+
+                inputStream = httpCon.getInputStream();
+                br = null;
+                switch (responseCode) {
+                    case 200:
+                        br = new BufferedReader(new InputStreamReader(inputStream));
+                        String line = br.readLine();
+                        if (line == null || !line.equals("success")) {
+                            return "Server responses with null or fail";
+                        }
+                        messageBody = messageBean.parseMessageToXhtml(readMessage);
+                        break;
+                }
+
+            } catch (Exception e) {
+
+                return "Error: message not found.";
+            }
+        }
+        return messageBody;
+    }
+
 
 }

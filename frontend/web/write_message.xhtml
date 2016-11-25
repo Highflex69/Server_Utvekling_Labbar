@@ -6,17 +6,18 @@
       xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
       xmlns:f="http://xmlns.jcp.org/jsf/core">
 
-<h:form>
-    From: <h:outputLabel value="#{userBean.myName}" />
-    <br/>
-    To:
-    <h:inputText id="inputTo" value="#{userBean.messageBean.to}" />
-    <br/>
-    Title:<h:inputText value="#{userBean.messageBean.title}"/>
-    <br/>
-    Content:<h:inputTextarea value="#{userBean.messageBean.content}"/>
-    <br/>
-    <h:commandButton id="knapp" value="Login"
-                     action="#{userBean.writeMessage}"/>
-</h:form>
+    <h:outputLabel value="#{userBean.menu}" escape="false"/>
+    <h:form>
+        From: <h:outputLabel value="#{userBean.myName}" />
+        <br/>
+        To:
+        <h:inputText id="inputTo" value="#{userBean.messageBean.to}" />
+        <br/>
+        Title:<h:inputText value="#{userBean.messageBean.title}"/>
+        <br/>
+        Content:<h:inputTextarea value="#{userBean.messageBean.content}"/>
+        <br/>
+        <h:commandButton id="knapp" value="Send"
+                         action="#{userBean.writeMessage}"/>
+    </h:form>
 </html>
