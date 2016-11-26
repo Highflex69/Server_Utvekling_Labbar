@@ -110,6 +110,7 @@ public class MessagePage {
         DTO_User user = databaseManager.getUserByNameAndPassword(username, password);
         if(user !=null)
         {
+            System.out.println("int parsed = " + Integer.parseInt(id));
             boolean result = databaseManager.setReadToMessageById(Integer.parseInt(id));
             if(result)
             {

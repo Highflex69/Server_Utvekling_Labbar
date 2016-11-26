@@ -272,16 +272,16 @@ public class DB_Manager {
             }
 
             message = (DB_Message) em.createQuery(
-                    "from DB_Message msg where msg.from.id = :searchId")
+                    "from DB_Message msg where msg.id = :searchId")
                     .setParameter("searchId", id)
                     .getSingleResult();
             return message;
         }catch (Exception e){e.printStackTrace();}
         finally {
 
-            session.close();
-            em.close();
-            emf.close();
+            if(session.isOpen()){session.close();}
+            if(em.isOpen()){em.close();}
+            if(emf.isOpen()){emf.close();}
         }
         return message;
     }
@@ -307,6 +307,7 @@ public class DB_Manager {
         boolean result = false;
         try
         {
+            DB_Message message = getMessageById(readToMessageById);
             if(!session.isOpen())
             {
                 session = HibernateUtil.getSessionFactory().openSession();
@@ -323,16 +324,16 @@ public class DB_Manager {
             {
                 session.beginTransaction();
             }
-            DB_Message message = getMessageById(readToMessageById);
+
             message.setRead();
             session.saveOrUpdate(message);
             result = true;
         }
         catch (Exception e){e.printStackTrace();}
         finally {
-            session.close();
-            em.close();
-            emf.close();
+            if(session.isOpen()){session.close();}
+            if(em.isOpen()){em.close();}
+            if(emf.isOpen()){emf.close();}
         }
         return result;
     }
@@ -423,6 +424,8 @@ public class DB_Manager {
 
     public DTO_Message getMessageByIdWithUserVerification(int id, String username, String password) {
 
+        DTO_Message result = null;
+
         try{
             if(!session.isOpen())
             {
@@ -442,12 +445,21 @@ public class DB_Manager {
             }
 
             DB_Message message = (DB_Message) em.createQuery(
-                    "from DB_Message msg where msg.from.id = :searchId")
+                    "from DB_Message msg where msg.id = :searchId")
                     .setParameter("searchId", id)
                     .getSingleResult();
+            System.out.println("messageId = " + id);
+            System.out.println("message-TO = " + message.getTo().getUsername() + " username = " + username);
+            System.out.println("message-TO-password = " + message.getTo().getPassword() + " password = " + password);
             if(message.getTo().getUsername().equalsIgnoreCase(username) && message.getTo().getPassword().equalsIgnoreCase(password))
             {
-                return new DTO_Message(message.getId(), message.getTitle(), message.getContent(), message.getTo().getUsername(), message.getFrom().getId(), message.isRead());
+                System.out.println("real user");
+                message.setRead();
+                session.saveOrUpdate(message);
+                session.getTransaction().commit();
+                System.out.println(message.getContent());
+                result = new DTO_Message(message.getId(), message.getTitle(), message.getContent(), message.getTo().getUsername(), message.getFrom().getId(), message.isRead());
+
             }
         }catch (Exception e){e.printStackTrace();}
         finally {
@@ -456,6 +468,6 @@ public class DB_Manager {
             em.close();
             emf.close();
         }
-        return null;
+        return result;
     }
 }

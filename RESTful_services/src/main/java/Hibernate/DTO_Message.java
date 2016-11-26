@@ -47,7 +47,7 @@ public class DTO_Message implements Serializable {
         return isRead;
     }
 
-    public void setRead(boolean read) {
-        isRead = read;
+    public void setRead() {
+        isRead = true;
     }
 }
