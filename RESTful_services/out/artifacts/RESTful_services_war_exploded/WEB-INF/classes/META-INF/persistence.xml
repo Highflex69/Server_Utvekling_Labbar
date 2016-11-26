@@ -12,10 +12,10 @@ http://java.sun.com/xml/ns/persistence/persistence_1_0.xsd"
         <class>DB.DB_Post</class>
         <exclude-unlisted-classes>false</exclude-unlisted-classes>
         <properties>
-            <property name="hibernate.connection.username" value="serverutveckling"/>
+            <property name="hibernate.connection.username" value="db_su"/>
             <property name="hibernate.connection.driver_class" value="com.mysql.jdbc.Driver"/>
-            <property name="hibernate.connection.password" value="carlos"/>
-            <property name="hibernate.connection.url" value="jdbc:mysql://130.229.143.168/db_serverutveckling"/>
+            <property name="hibernate.connection.password" value="test123"/>
+            <property name="hibernate.connection.url" value="jdbc:mysql://172.16.83.75/db_serverutv"/>
             <property name="hibernate.cache.provider_class"
                       value="org.hibernate.cache.internal.NoCachingRegionFactory"/>
         </properties>
