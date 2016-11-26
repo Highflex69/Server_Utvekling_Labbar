@@ -9,13 +9,7 @@
     </h:head>
 
     <h:body>
-        <h:form>
-            <h:inputText size="20" value="#{userBean.username}">
-                <f:ajax event="keyup" render="nameList"/>
-            </h:inputText>
-            <h:dataTable id="nameList" value="#{userBean.names}" var="name" border="1">
-                <h:column>#{name}</h:column>
-            </h:dataTable>
-        </h:form>
+        <h:outputLabel value="#{userBean.menu}" escape="false"/>
+        <h:outputLabel>Search</h:outputLabel>
     </h:body>
 </html>
