@@ -3,6 +3,7 @@ package RESTful;
 import DB.DB_Manager;
 import Hibernate.DTO_Log;
 import Hibernate.DTO_User;
+import Hibernate.DTO_Users;
 import com.google.gson.Gson;
 
 import javax.ws.rs.*;
@@ -14,6 +15,8 @@ import javax.ws.rs.core.Response;
  */
 @Path("/UserPage")
 public class UserPage {
+    private static final String RESULT_SUCCESS="success";
+    private static final String RESULT_FAILURE="fail";
 
     @POST()
     @Path("/GetUserLog")
@@ -40,4 +43,52 @@ public class UserPage {
         }
         return Response.status(403).entity(null).build();
     }
+
+    @POST()
+    @Path("/GetAllUsers")
+    @Produces(MediaType.APPLICATION_JSON)
+    @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
+    public Response getAllUsers(@FormParam("username") String username,
+                             @FormParam("password") String password)
+    {
+        DB_Manager databaseManager = new DB_Manager();
+        DTO_User user = databaseManager.getUserByNameAndPassword(username, password);
+        if(user !=null)
+        {
+            DTO_Users usersFound = databaseManager.getAllUsernames();
+            if(usersFound != null)
+            {
+                return Response.status(200).entity(new Gson().toJson(usersFound)).build();
+            }
+        }
+        return Response.status(403).entity(null).build();
+    }
+
+    @POST()
+    @Path("/AddFriend")
+    @Produces(MediaType.APPLICATION_JSON)
+    @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
+    public Response getAllUsers(@FormParam("username") String username,
+                                @FormParam("password") String password,
+                                @FormParam("friendusername") String friendUsername)
+    {
+        DB_Manager databaseManager = new DB_Manager();
+        DTO_User user = databaseManager.getUserByNameAndPassword(username, password);
+        if(user != null)
+        {
+            int result = databaseManager.addFriendToUser(friendUsername, user.getUsername());
+            if(result == 1)
+            {
+                return Response.status(200).entity(RESULT_SUCCESS).build();
+            }
+            else if(result == 2)
+            {
+                return Response.status(200).entity("already_friend").build();
+            }
+        }
+        return Response.status(500).entity(RESULT_FAILURE).build();
+    }
+
+
+
 }

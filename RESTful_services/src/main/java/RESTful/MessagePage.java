@@ -52,7 +52,7 @@ public class MessagePage {
     @Path("/GetMessages")
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
-    public Response getMyLog(@FormParam("username") String username,
+    public Response getMessages(@FormParam("username") String username,
                              @FormParam("password") String password)
     {
         System.out.println("username= " +username + " password= " + password);
@@ -70,6 +70,32 @@ public class MessagePage {
         }
         return Response.status(403).entity(null).build();
     }
+
+    @POST()
+    @Path("/GetMessage")
+    @Produces(MediaType.APPLICATION_JSON)
+    @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
+    public Response getMessage(@FormParam("username") String username,
+                                   @FormParam("password") String password,
+                                   @FormParam("messageId") String id)
+    {
+        System.out.println("username= " +username + " password= " + password + "messageID = " + id);
+        DB_Manager databaseManager = new DB_Manager();
+        DTO_User user = databaseManager.getUserByNameAndPassword(username, password);
+        if(user !=null)
+        {
+            DTO_Message msg = databaseManager.getMessageByIdWithUserVerification(Integer.parseInt(id), username, password);
+            if(msg!= null)
+            {
+                System.out.println("get message " + id + "successful");
+                return Response.status(200).entity(new Gson().toJson(msg)).build();
+            }
+        }
+        return Response.status(500).entity(RESULT_FAILURE).build();
+    }
+
+
+
 
     @POST()
     @Path("/ReadMessage")
@@ -93,6 +119,5 @@ public class MessagePage {
         }
         return Response.status(200).entity(RESULT_FAILURE).build();
     }
-
 
 }
