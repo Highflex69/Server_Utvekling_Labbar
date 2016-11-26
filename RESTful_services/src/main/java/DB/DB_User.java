@@ -3,6 +3,9 @@ package DB;
 import com.sun.istack.internal.NotNull;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 
 /**
  * Created by Teddy on 2016-11-21.
@@ -25,14 +28,20 @@ public class DB_User {
     @Column( name = "C_PASSWORD", nullable = false)
     private String password;
 
+    @OneToMany()
+    @JoinColumn(name = "C_FRIENDS")
+    private List<DB_User> friends;
+
     public DB_User(String name, String username, String password)
     {
         this.name = name;
         this.username = username;
         this.password = password;
+        this.friends = new ArrayList<DB_User>();
     }
 
     public DB_User() {
+        this.friends = new ArrayList<DB_User>();
     }
 
 
@@ -70,4 +79,16 @@ public class DB_User {
         this.password = password;
     }
 
+    public List<DB_User> getFriends() {
+        return friends;
+    }
+
+    public void addFriend(DB_User user)
+    {
+        this.friends.add(user);
+    }
+
+    public void setFriends(List<DB_User> friends) {
+        this.friends = friends;
+    }
 }

@@ -6,6 +6,7 @@ import org.hibernate.Session;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -45,12 +46,12 @@ public class DB_Manager {
         boolean result = false;
         try
         {
+            //create a receive DTO_USER and create a new DB_USER to set into DB_Post as author.
+            DB_Post newLog = new DB_Post(content, getUserByUsername(author.getUsername()));
             if(!session.isOpen())
             {
                 session = HibernateUtil.getSessionFactory().openSession();
             }
-            //create a receive DTO_USER and create a new DB_USER to set into DB_Post as author.
-            DB_Post newLog = new DB_Post(content, getUserByUsername(author.getUsername()));
             session.beginTransaction();
             session.save(newLog);
             session.getTransaction().commit();
@@ -103,7 +104,7 @@ public class DB_Manager {
 
     public DTO_User getUserByNameAndPassword(String username, String password)
     {
-        System.out.println("getting user by username and password");
+        System.out.println("getting user by username and password" +" "+ username+ " " + password);
         DTO_User userToReturn = null;
         try{
 
@@ -265,7 +266,6 @@ public class DB_Manager {
                 em = emf.createEntityManager();
             }
 
-
             if(!session.getTransaction().isActive())
             {
                 session.beginTransaction();
@@ -335,5 +335,127 @@ public class DB_Manager {
             emf.close();
         }
         return result;
+    }
+
+    public DTO_Users getAllUsernames() {
+        DTO_Users allUsers = null;
+        try
+        {
+            if(!session.isOpen())
+            {
+                session = HibernateUtil.getSessionFactory().openSession();
+            }
+            if(!emf.isOpen())
+            {
+                emf = Persistence.createEntityManagerFactory("TestPU");
+            }
+            if(!em.isOpen())
+            {
+                em = emf.createEntityManager();
+            }
+            if(!session.getTransaction().isActive())
+            {
+                session.beginTransaction();
+            }
+            List<DB_User> userList = (List<DB_User>) em.createQuery(
+                    "from DB_User user").getResultList();
+
+            if(userList != null)
+            {
+                for(DB_User user : userList)
+                {
+                    allUsers.addUser(user.getUsername());
+                }
+            }
+        }catch (Exception e){e.printStackTrace();}
+        finally {
+            if(session.isOpen()){session.close();}
+            if(em.isOpen()){em.close();}
+            if(emf.isOpen()){emf.close();}
+        }
+        return allUsers;
+    }
+
+    public int addFriendToUser(String friendUsername, String username) {
+        //results: -1 error, 1 added, 2 already friend;
+        DB_User user = getUserByUsername(username);
+        DB_User friend = getUserByUsername(friendUsername);
+        boolean alreadyFriend = false;
+        int result = -1;
+
+        if(user != null || friend != null)
+        {
+            for(DB_User friendFound : user.getFriends())
+            {
+                if(friendFound.getId() == friend.getId())
+                {
+                    alreadyFriend = true;
+                }
+                result = 2;
+            }
+        }
+
+        if(!alreadyFriend)
+        {
+            try{
+                if(!session.isOpen())
+                {
+                    session = HibernateUtil.getSessionFactory().openSession();
+                    emf = Persistence.createEntityManagerFactory("TestPU");
+                    em = emf.createEntityManager();
+                }
+                session.getTransaction();
+
+                user.addFriend(user);
+                session.saveOrUpdate(user);
+                session.getTransaction().commit();
+                result = 1;
+            }catch (Exception e){result = -1; e.printStackTrace();}
+            finally {
+                session.close();
+                em.close();
+                emf.close();
+            }
+        }
+
+        return result;
+    }
+
+    public DTO_Message getMessageByIdWithUserVerification(int id, String username, String password) {
+
+        try{
+            if(!session.isOpen())
+            {
+                session = HibernateUtil.getSessionFactory().openSession();
+            }
+            if(!emf.isOpen())
+            {
+                emf = Persistence.createEntityManagerFactory("TestPU");
+            }
+            if(!em.isOpen())
+            {
+                em = emf.createEntityManager();
+            }
+            if(!session.getTransaction().isActive())
+            {
+                session.beginTransaction();
+            }
+
+            DB_Message message = (DB_Message) em.createQuery(
+                    "from DB_Message msg where msg.from.id = :searchId")
+                    .setParameter("searchId", id)
+                    .getSingleResult();
+            if(message.getTo().getUsername().equalsIgnoreCase(username) && message.getTo().getPassword().equalsIgnoreCase(password))
+            {
+                return new DTO_Message(message.getId(), message.getTitle(), message.getContent(), message.getTo().getUsername(), message.getFrom().getId(), message.isRead());
+            }
+        }catch (Exception e){e.printStackTrace();}
+        finally {
+
+            session.close();
+            em.close();
+            emf.close();
+        }
+        return null;
     }
 }
