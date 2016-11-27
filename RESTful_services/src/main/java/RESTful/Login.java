@@ -1,6 +1,7 @@
 package RESTful;
 
 import DB.DB_Manager;
+import DB.DB_User;
 import Hibernate.DTO_User;
 import com.google.gson.Gson;
 
@@ -35,4 +36,25 @@ public class Login {
         }
         return Response.status(403).entity(RESULT_FAILURE).build();
     }
+
+    @GET()
+    @Path("/get")
+    @Produces(MediaType.APPLICATION_JSON)
+    @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
+    public Response getExample()
+    {
+        return Response.status(200).entity("Hello World!").build();
+    }
+
+    @GET()
+    @Path("/getdb")
+    @Produces(MediaType.APPLICATION_JSON)
+    @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
+    public Response getExample2()
+    {
+        DB_Manager dataDb = new DB_Manager();
+        DTO_User user = dataDb.getUserByNameAndPassword("carlos", "test123");
+        return Response.status(200).entity(user.getName()).build();
+    }
+
 }
