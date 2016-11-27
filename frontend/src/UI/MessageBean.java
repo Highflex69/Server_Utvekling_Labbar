@@ -14,10 +14,10 @@ public class MessageBean {
     private String content;
     private int idFrom;
     private String to;
-    private ArrayList<DTO_Message> inboxList;
+    private ArrayList<DTO_Message> inboxList1;
 
     public MessageBean() {
-        inboxList = null;
+        System.out.println("MessageBean onstructor");
     }
 
     public String getTitle() {
@@ -53,17 +53,23 @@ public class MessageBean {
     }
 
     public void setInboxList(ArrayList<DTO_Message> messageList) {
-        inboxList = messageList;
+        inboxList1 = new ArrayList<>();
+        inboxList1.addAll(messageList);
+        System.out.println("Messages in inbox: " +inboxList1.size());
     }
 
     public DTO_Message getMessage(int id) {
-        if(inboxList == null) {return null; }
+        if(inboxList1 == null) {
+            System.out.println("MessageList is null");
+            return null; }
 
-        for(DTO_Message m: inboxList) {
+        System.out.println("Messages in inbox: " +inboxList1.size());
+        for(DTO_Message m: inboxList1) {
             if(m.getId() == id) {
                 return m;
             }
         }
+        System.out.println("Message not found");
         return null;
     }
 
@@ -72,17 +78,20 @@ public class MessageBean {
         return new DTO_Message(-1 ,title, content, to, idFrom, false);
     }
 
-    public String parseListToXhtml(DTO_Messages messageList) {
-        if(messageList == null) return "";
+    public String parseListToXhtml(DTO_Messages mList) {
+        if(mList == null) return "";
         StringBuilder sb = new StringBuilder();
-        ArrayList<DTO_Message> messageArray = messageList.getMessagesList();
         boolean isRead = false;
+        ArrayList<DTO_Message> messageList = mList.getMessagesList();
 
-        for(DTO_Message m: messageArray) {
+        for(DTO_Message m: messageList) {
             isRead = m.isRead();
             if(!isRead) {sb.append("<b>");}
-            sb.append("<a href=\"display_message.xhtml?id=" +m.getId() +"\"" +">" +m.getTitle() +"</a><br />");
+            sb.append(m.getTitle() +" ");
             if(!isRead) {sb.append("</b>");}
+            sb.append("<form action=\"display_message.xhtml" +m.getId() +"\" method=\"post\"><input type=\"submit\" name=\"" +m.getId()+ "\" value=\"Read\" /></form>");
+            //sb.append("<a href=\"display_message.xhtml?id=" +m.getId() +"\"" +">" +m.getTitle() +"</a><br />");
+
         }
         return sb.toString();
     }
