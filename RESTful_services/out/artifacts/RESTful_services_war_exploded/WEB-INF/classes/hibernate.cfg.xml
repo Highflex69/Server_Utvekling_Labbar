@@ -4,11 +4,7 @@
         "http://www.hibernate.org/dtd/hibernate-configuration-3.0.dtd">
 <hibernate-configuration>
     <session-factory>
-        <!-- d = 130.229.143.168 -->
-        <!-- db_serverutveckling -->
-        <!-- username serverutveckling -->
-        <!-- pass carlos -->
-        <property name="connection.url">jdbc:mysql://172.16.83.75/db_serverutv</property>
+        <property name="connection.url">jdbc:mysql://172.16.83.75:3306/db_serverutv</property>
         <property name="connection.driver_class">com.mysql.jdbc.Driver</property>
         <property name="connection.username">db_su</property>
         <property name="connection.password">test123</property>
@@ -18,7 +14,7 @@
 
         <property name="cache.provider_class">org.hibernate.cache.internal.NoCachingRegionFactory</property>
         <property name="show_sql">true</property>
-        <property name="hbm2ddl.auto">update</property>
+        <property name="hbm2ddl.auto">create</property>
         <mapping class="DB.DB_User"/>
         <mapping class="DB.DB_Message"/>
         <mapping class="DB.DB_Post"/>
