@@ -7,7 +7,7 @@ import java.io.Serializable;
 /**
  * Created by Teddy on 2016-11-24.
  */
-public class DTO_Post implements Serializable{
+public class DTO_Post implements Serializable, Comparable<DTO_Post>{
     private int id;
     private String content;
     private int author;
@@ -29,5 +29,19 @@ public class DTO_Post implements Serializable{
 
     public int getAuthor() {
         return author;
+    }
+
+    public int compareTo(DTO_Post dto_post) {
+        if(this.id == dto_post.getId())
+        {
+            return 0;
+        }
+        else if(this.id < dto_post.getId())
+        {
+            return 1;
+        }
+
+        return -1;
+
     }
 }

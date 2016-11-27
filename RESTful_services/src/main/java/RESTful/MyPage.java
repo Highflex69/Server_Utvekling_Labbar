@@ -2,6 +2,7 @@ package RESTful;
 
 import DB.DB_Manager;
 import DB.DB_User;
+import Hibernate.DTO_Log;
 import Hibernate.DTO_User;
 import com.google.gson.Gson;
 import org.codehaus.jettison.json.JSONException;
@@ -38,6 +39,30 @@ public class MyPage {
         {
             Gson gson = new Gson();
             return Response.status(200).entity(gson.toJson(user)).build();
+        }
+        else
+        {
+            System.out.println("user is null");
+            String fail = "status : " + RESULT_FAILURE;
+            return Response.status(403).entity(fail).build();
+        }
+    }
+
+    @POST()
+    @Path("/GetStream")
+    @Produces(MediaType.APPLICATION_JSON)
+    @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
+    public Response getStream(@FormParam("username") String username,
+                                    @FormParam("password") String password)
+    {
+        System.out.println("in getStream");
+        DB_Manager databaseManager = new DB_Manager();
+        DTO_User user = databaseManager.getUserByNameAndPassword(username, password);
+
+        if(user != null)
+        {
+            DTO_Log streamLog = databaseManager.getUserStream(user);
+            return Response.status(200).entity(streamLog).build();
         }
         else
         {

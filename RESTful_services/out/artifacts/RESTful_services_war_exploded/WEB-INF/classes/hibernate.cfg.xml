@@ -8,13 +8,18 @@
         <property name="connection.driver_class">com.mysql.jdbc.Driver</property>
         <property name="connection.username">db_su</property>
         <property name="connection.password">test123</property>
+
+        <!--<property name="connection.url">jdbc:mysql://130.229.143.168:3306/db_serverutveckling</property>
+        <property name="connection.driver_class">com.mysql.jdbc.Driver</property>
+        <property name="connection.username">serverutveckling</property>
+        <property name="connection.password">carlos</property>-->
         <property name="connection.pool_size">2</property>
         <property name="dialect"> org.hibernate.dialect.MySQLDialect</property>
         <property name="current_session_context_class">org.hibernate.context.internal.ManagedSessionContext</property>
 
         <property name="cache.provider_class">org.hibernate.cache.internal.NoCachingRegionFactory</property>
         <property name="show_sql">true</property>
-        <property name="hbm2ddl.auto">create</property>
+        <property name="hbm2ddl.auto">update</property>
         <mapping class="DB.DB_User"/>
         <mapping class="DB.DB_Message"/>
         <mapping class="DB.DB_Post"/>

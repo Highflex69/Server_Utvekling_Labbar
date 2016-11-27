@@ -24,7 +24,7 @@ public class UserPage {
     @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
     public Response getMyLog(@FormParam("username") String username,
                              @FormParam("password") String password,
-                             @FormParam("searchforusename") String searchUsername)
+                             @FormParam("searchforusername") String searchUsername)
     {
         System.out.println("username= " +username + " password= " + password + " search for = " + searchUsername);
         DB_Manager databaseManager = new DB_Manager();
@@ -34,7 +34,7 @@ public class UserPage {
             DTO_User userFound = databaseManager.getUserDTOByUsername(searchUsername);
             if(userFound != null)
             {
-                DTO_Log logList = databaseManager.getLogsById(user.getId());
+                DTO_Log logList = databaseManager.getLogsByUserId(userFound.getId());
                 if(logList != null)
                 {
                     return Response.status(200).entity(new Gson().toJson(logList)).build();
@@ -68,7 +68,7 @@ public class UserPage {
     @Path("/AddFriend")
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
-    public Response getAllUsers(@FormParam("username") String username,
+    public Response addFriend(@FormParam("username") String username,
                                 @FormParam("password") String password,
                                 @FormParam("friendusername") String friendUsername)
     {
@@ -88,6 +88,29 @@ public class UserPage {
         }
         return Response.status(500).entity(RESULT_FAILURE).build();
     }
+
+    @POST()
+    @Path("/RemoveFriend")
+    @Produces(MediaType.APPLICATION_JSON)
+    @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
+    public Response removeFriend(@FormParam("username") String username,
+                                @FormParam("password") String password,
+                                @FormParam("friendusername") String friendUsername)
+    {
+        DB_Manager databaseManager = new DB_Manager();
+        DTO_User user = databaseManager.getUserByNameAndPassword(username, password);
+        if(user != null)
+        {
+            boolean result = databaseManager.removeFriendWithIdFromUser(friendUsername, user.getUsername());
+            if(result)
+            {
+                return Response.status(200).entity(RESULT_SUCCESS).build();
+            }
+        }
+        return Response.status(500).entity(RESULT_FAILURE).build();
+    }
+
+
 
 
 

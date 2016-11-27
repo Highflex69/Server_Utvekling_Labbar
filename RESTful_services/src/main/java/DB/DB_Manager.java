@@ -6,8 +6,7 @@ import org.hibernate.Session;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 /**
  * Created by Teddy on 2016-11-23.
@@ -41,13 +40,14 @@ public class DB_Manager {
         return result;
     }
 
+    //post
     public boolean addLogByUser(String content, DTO_User author)
     {
         boolean result = false;
         try
         {
             //create a receive DTO_USER and create a new DB_USER to set into DB_Post as author.
-            DB_Post newLog = new DB_Post(content, getUserByUsername(author.getUsername()));
+            DB_Post newLog = new DB_Post(content, getUserByUsername(author.getUsername()), new Date().getTime());
             if(!session.isOpen())
             {
                 session = HibernateUtil.getSessionFactory().openSession();
@@ -84,6 +84,54 @@ public class DB_Manager {
         catch (Exception e){e.printStackTrace();}
         finally {
             session.close();
+        }
+        return result;
+    }
+
+    public boolean removeFriendWithIdFromUser(String friendUsername, String username)
+    {
+        boolean result = false;
+        try
+        {
+            DB_User currentUser = getUserByUsername(username);
+            if(!session.isOpen())
+            {
+                session = HibernateUtil.getSessionFactory().openSession();
+            }
+            if(!emf.isOpen())
+            {
+                emf = Persistence.createEntityManagerFactory("TestPU");
+            }
+            if(!em.isOpen())
+            {
+                em = emf.createEntityManager();
+            }
+
+            if(!session.getTransaction().isActive())
+            {
+                session.beginTransaction();
+            }
+            session.beginTransaction();
+
+            int i=0;
+            for(DB_User friend : currentUser.getFriends())
+            {
+                if(friend.getUsername().equalsIgnoreCase(friendUsername))
+                {
+                    currentUser.getFriends().remove(i);
+                }
+                i++;
+            }
+
+            session.save(currentUser);
+            session.getTransaction().commit();
+            result = true;
+        }
+        catch (Exception e){e.printStackTrace();}
+        finally {
+            if(session.isOpen()){session.close();}
+            if(em.isOpen()){em.close();}
+            if(emf.isOpen()){emf.close();}
         }
         return result;
     }
@@ -160,7 +208,7 @@ public class DB_Manager {
             {
                 session.beginTransaction();
             }
-
+            System.out.println("searchUsername = " + username);
             user =  (DB_User) em.createQuery(
                     "from DB_User user where user.username = :searchUsername")
                     .setParameter("searchUsername", username)
@@ -175,7 +223,7 @@ public class DB_Manager {
         return user;
     }
 
-    public DTO_Log getLogsById(int id)
+    public DTO_Log getLogsByUserId(int id)
     {
 
         DTO_Log logs = new DTO_Log();
@@ -359,10 +407,11 @@ public class DB_Manager {
                 session.beginTransaction();
             }
             List<DB_User> userList = (List<DB_User>) em.createQuery(
-                    "from DB_User user").getResultList();
-
+                    "from DB_User").getResultList();
+            System.out.println("all user size:" + userList.size());
             if(userList != null)
             {
+                allUsers = new DTO_Users();
                 for(DB_User user : userList)
                 {
                     allUsers.addUser(user.getUsername());
@@ -469,5 +518,62 @@ public class DB_Manager {
             emf.close();
         }
         return result;
+    }
+
+    public DTO_Log getUserStream(DTO_User user) {
+        DTO_Log stream = null;
+
+        try
+        {
+            DB_User currentUser = getUserByUsername(user.getUsername());
+            if(!session.isOpen())
+            {
+                session = HibernateUtil.getSessionFactory().openSession();
+            }
+            if(!emf.isOpen())
+            {
+                emf = Persistence.createEntityManagerFactory("TestPU");
+            }
+            if(!em.isOpen())
+            {
+                em = emf.createEntityManager();
+            }
+
+            if(!session.getTransaction().isActive())
+            {
+                session.beginTransaction();
+            }
+
+            List<DB_User> friendList = currentUser.getFriends();
+            if(friendList!=null)
+            {
+                stream = new DTO_Log();
+                ArrayList<DTO_Log> friensLog = new ArrayList<DTO_Log>();
+                for(DB_User friend : friendList)
+                {
+                    for(DTO_Post post : getLogsByUserId(friend.getId()).getPostList())
+                    {
+                        stream.addPost(post);
+                    }
+                }
+                if(stream != null)
+                {
+                    stream = sortLogByTimePosted(stream);
+                }
+            }
+
+        }catch (Exception e){e.printStackTrace();}
+        finally {
+            if(session.isOpen()){session.close();}
+            if(em.isOpen()){em.close();}
+            if(emf.isOpen()){emf.close();}
+        }
+        return stream;
+    }
+
+    private DTO_Log sortLogByTimePosted(DTO_Log listToSort)
+    {
+        Collections.sort(listToSort.getPostList());
+        return  listToSort;
     }
 }

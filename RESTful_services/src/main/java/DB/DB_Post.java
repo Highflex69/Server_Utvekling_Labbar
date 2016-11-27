@@ -14,6 +14,9 @@ public class DB_Post {
     @Column(name = "C_ID")
     private int id;
 
+    @Column(name = "C_TIME_POSTED")
+    private long timePosted;
+
     @Column(name = "C_LOG_CONTENT", columnDefinition = "TEXT")
     private String content;
 
@@ -23,10 +26,11 @@ public class DB_Post {
 
     public  DB_Post(){}
 
-    public DB_Post(String content, DB_User author)
+    public DB_Post(String content, DB_User author, long timePosted)
     {
         this.content = content;
         this.authorId = author;
+        this.timePosted = timePosted;
     }
 
     public int getId() {
@@ -39,5 +43,9 @@ public class DB_Post {
 
     public DB_User getAuthorId() {
         return authorId;
+    }
+
+    public long getTimePosted() {
+        return timePosted;
     }
 }

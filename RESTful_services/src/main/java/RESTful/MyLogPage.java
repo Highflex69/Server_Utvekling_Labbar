@@ -1,16 +1,13 @@
 package RESTful;
 
 import DB.DB_Manager;
-import DB.DB_User;
 import Hibernate.DTO_Log;
-import Hibernate.DTO_Post;
 import Hibernate.DTO_User;
 import com.google.gson.Gson;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-import java.util.ArrayList;
 
 /**
  * Created by Teddy on 2016-11-24.
@@ -32,7 +29,7 @@ public class MyLogPage {
         DTO_User user = databaseManager.getUserByNameAndPassword(username, password);
         if(user !=null)
         {
-            DTO_Log logList = databaseManager.getLogsById(user.getId());
+            DTO_Log logList = databaseManager.getLogsByUserId(user.getId());
             if(logList != null)
             {
                 return Response.status(200).entity(new Gson().toJson(logList)).build();
