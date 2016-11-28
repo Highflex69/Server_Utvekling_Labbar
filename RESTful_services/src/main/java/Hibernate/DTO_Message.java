@@ -11,10 +11,10 @@ public class DTO_Message implements Serializable {
     private String title;
     private String content;
     private String toUsername;
-    private int fromId;
+    private String fromId;
     private boolean isRead;
 
-    public DTO_Message(int id, String title, String content, String toUsername, int fromId, boolean isRead) {
+    public DTO_Message(int id, String title, String content, String toUsername, String fromId, boolean isRead) {
         this.id = id;
         this.title = title;
         this.content = content;
@@ -39,7 +39,7 @@ public class DTO_Message implements Serializable {
         return toUsername;
     }
 
-    public int getFromId() {
+    public String getFromId() {
         return fromId;
     }
 

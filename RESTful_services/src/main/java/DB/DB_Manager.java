@@ -291,13 +291,13 @@ public class DB_Manager {
                 session.beginTransaction();
             }
             msgList = (List<DB_Message>) em.createQuery(
-                    "from DB_Message msg where msg.from.id = :searchId")
+                    "from DB_Message msg where msg.to.id = :searchId")
                     .setParameter("searchId", id)
                     .getResultList();
 
             for (DB_Message msg : msgList)
             {
-                messages.add(new DTO_Message(msg.getId(), msg.getTitle(), msg.getContent(), msg.getTo().getUsername(), msg.getFrom().getId(), msg.isRead()));
+                messages.add(new DTO_Message(msg.getId(), msg.getTitle(), msg.getContent(), msg.getTo().getUsername(), msg.getFrom().getUsername(), msg.isRead()));
             }
         }catch (Exception e){e.printStackTrace();session.getTransaction().rollback();}
         finally {
@@ -534,7 +534,7 @@ public class DB_Manager {
                 session.saveOrUpdate(message);
                 session.getTransaction().commit();
                 System.out.println(message.getContent());
-                result = new DTO_Message(message.getId(), message.getTitle(), message.getContent(), message.getTo().getUsername(), message.getFrom().getId(), message.isRead());
+                result = new DTO_Message(message.getId(), message.getTitle(), message.getContent(), message.getTo().getUsername(), message.getFrom().getUsername(), message.isRead());
 
             }
         }catch (Exception e){e.printStackTrace();session.getTransaction().rollback();}
