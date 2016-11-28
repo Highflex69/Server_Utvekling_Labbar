@@ -35,7 +35,7 @@ public class DB_Manager {
             session.getTransaction().commit();
             result = 1;
         }
-        catch (Exception e) {e.printStackTrace();}
+        catch (Exception e) {e.printStackTrace();session.getTransaction().rollback();}
         finally {session.close();}
         return result;
     }
@@ -57,7 +57,7 @@ public class DB_Manager {
             session.getTransaction().commit();
             result = true;
         }
-        catch (Exception e){e.printStackTrace();}
+        catch (Exception e){e.printStackTrace();session.getTransaction().rollback();}
         finally {
             session.close();
         }
@@ -81,7 +81,7 @@ public class DB_Manager {
             session.getTransaction().commit();
             result = true;
         }
-        catch (Exception e){e.printStackTrace();}
+        catch (Exception e){e.printStackTrace();session.getTransaction().rollback();}
         finally {
             session.close();
         }
@@ -94,6 +94,7 @@ public class DB_Manager {
         try
         {
             DB_User currentUser = getUserByUsername(username);
+            DB_User friend = getUserByUsername(friendUsername);
             if(!session.isOpen())
             {
                 session = HibernateUtil.getSessionFactory().openSession();
@@ -111,23 +112,31 @@ public class DB_Manager {
             {
                 session.beginTransaction();
             }
-            session.beginTransaction();
 
-            int i=0;
-            for(DB_User friend : currentUser.getFriends())
+
+            int size = currentUser.getFriends().size();
+            for(int i=0;i<size;i++)
             {
-                if(friend.getUsername().equalsIgnoreCase(friendUsername))
+                if(currentUser.getFriends().get(i).getId() == friend.getId())
                 {
                     currentUser.getFriends().remove(i);
                 }
-                i++;
+            }
+            int friendSize = friend.getFriends().size();
+            for (int j=0;j<friendSize;j++)
+            {
+                if(friend.getFriends().get(j).getId() == currentUser.getId())
+                {
+                    friend.getFriends().remove(j);
+                }
             }
 
-            session.save(currentUser);
+            session.saveOrUpdate(currentUser);
+            session.saveOrUpdate(friend);
             session.getTransaction().commit();
             result = true;
         }
-        catch (Exception e){e.printStackTrace();}
+        catch (Exception e){e.printStackTrace();session.getTransaction().rollback();}
         finally {
             if(session.isOpen()){session.close();}
             if(em.isOpen()){em.close();}
@@ -164,7 +173,7 @@ public class DB_Manager {
                     .getSingleResult();
             userToReturn = new DTO_User(user.getId(), user.getName(), user.getUsername(), getNoOfUnreadMessagesByUser(user));
 
-        }catch (Exception e) {e.printStackTrace();}
+        }catch (Exception e) {e.printStackTrace(); session.getTransaction().rollback();}
         finally
         {
             if(session.isOpen()){session.close();}
@@ -213,7 +222,7 @@ public class DB_Manager {
                     "from DB_User user where user.username = :searchUsername")
                     .setParameter("searchUsername", username)
                     .getSingleResult();
-        }catch (Exception e) {e.printStackTrace();}
+        }catch (Exception e) {e.printStackTrace();session.getTransaction().rollback();}
         finally
         {
             session.close();
@@ -235,7 +244,10 @@ public class DB_Manager {
                 em = emf.createEntityManager();
             }
             List<DB_Post> logList;
-            session.beginTransaction();
+            if(!session.getTransaction().isActive())
+            {
+                session.beginTransaction();
+            }
             logList = (List<DB_Post>) em.createQuery(
                     "from DB_Post post where post.authorId.id = :searchId")
                     .setParameter("searchId", id)
@@ -243,9 +255,9 @@ public class DB_Manager {
 
             for (DB_Post log : logList)
             {
-                logs.addPost(new DTO_Post(log.getId(), log.getContent(), log.getAuthorId().getId()));
+                logs.addPost(new DTO_Post(log.getId(), log.getContent(), log.getAuthorId().getUsername()));
             }
-        }catch (Exception e){e.printStackTrace();}
+        }catch (Exception e){e.printStackTrace();session.getTransaction().rollback();}
         finally {
             session.close();
             em.close();
@@ -287,7 +299,7 @@ public class DB_Manager {
             {
                 messages.add(new DTO_Message(msg.getId(), msg.getTitle(), msg.getContent(), msg.getTo().getUsername(), msg.getFrom().getId(), msg.isRead()));
             }
-        }catch (Exception e){e.printStackTrace();}
+        }catch (Exception e){e.printStackTrace();session.getTransaction().rollback();}
         finally {
 
             session.close();
@@ -324,7 +336,7 @@ public class DB_Manager {
                     .setParameter("searchId", id)
                     .getSingleResult();
             return message;
-        }catch (Exception e){e.printStackTrace();}
+        }catch (Exception e){e.printStackTrace();session.getTransaction().rollback();}
         finally {
 
             if(session.isOpen()){session.close();}
@@ -377,7 +389,7 @@ public class DB_Manager {
             session.saveOrUpdate(message);
             result = true;
         }
-        catch (Exception e){e.printStackTrace();}
+        catch (Exception e){e.printStackTrace();session.getTransaction().rollback();}
         finally {
             if(session.isOpen()){session.close();}
             if(em.isOpen()){em.close();}
@@ -406,6 +418,7 @@ public class DB_Manager {
             {
                 session.beginTransaction();
             }
+
             List<DB_User> userList = (List<DB_User>) em.createQuery(
                     "from DB_User").getResultList();
             System.out.println("all user size:" + userList.size());
@@ -417,7 +430,7 @@ public class DB_Manager {
                     allUsers.addUser(user.getUsername());
                 }
             }
-        }catch (Exception e){e.printStackTrace();}
+        }catch (Exception e){e.printStackTrace();session.getTransaction().rollback();}
         finally {
             if(session.isOpen()){session.close();}
             if(em.isOpen()){em.close();}
@@ -430,18 +443,30 @@ public class DB_Manager {
         //results: -1 error, 1 added, 2 already friend;
         DB_User user = getUserByUsername(username);
         DB_User friend = getUserByUsername(friendUsername);
+
         boolean alreadyFriend = false;
         int result = -1;
 
-        if(user != null || friend != null)
+        if(user != null && friend != null)
         {
-            for(DB_User friendFound : user.getFriends())
+            if(!session.isOpen())
             {
-                if(friendFound.getId() == friend.getId())
+                session = HibernateUtil.getSessionFactory().openSession();
+                emf = Persistence.createEntityManagerFactory("TestPU");
+                em = emf.createEntityManager();
+            }
+            List<DB_User> friends = user.getFriends();
+            if(friends != null)
+            {
+                for(DB_User friendFound : friends)
                 {
-                    alreadyFriend = true;
+                    if(friendFound.getId() == friend.getId())
+                    {
+                        alreadyFriend = true;
+                        result = 2;
+                    }
+
                 }
-                result = 2;
             }
         }
 
@@ -454,13 +479,15 @@ public class DB_Manager {
                     emf = Persistence.createEntityManagerFactory("TestPU");
                     em = emf.createEntityManager();
                 }
-                session.getTransaction();
+                session.beginTransaction();
 
-                user.addFriend(user);
+                user.addFriend(friend);
+                friend.addFriend(user);
                 session.saveOrUpdate(user);
+                session.saveOrUpdate(friend);
                 session.getTransaction().commit();
                 result = 1;
-            }catch (Exception e){result = -1; e.printStackTrace();}
+            }catch (Exception e){result = -1; e.printStackTrace(); session.getTransaction().rollback();}
             finally {
                 session.close();
                 em.close();
@@ -510,7 +537,7 @@ public class DB_Manager {
                 result = new DTO_Message(message.getId(), message.getTitle(), message.getContent(), message.getTo().getUsername(), message.getFrom().getId(), message.isRead());
 
             }
-        }catch (Exception e){e.printStackTrace();}
+        }catch (Exception e){e.printStackTrace();session.getTransaction().rollback();}
         finally {
 
             session.close();
@@ -562,7 +589,7 @@ public class DB_Manager {
                 }
             }
 
-        }catch (Exception e){e.printStackTrace();}
+        }catch (Exception e){e.printStackTrace();session.getTransaction().rollback();}
         finally {
             if(session.isOpen()){session.close();}
             if(em.isOpen()){em.close();}
@@ -575,5 +602,48 @@ public class DB_Manager {
     {
         Collections.sort(listToSort.getPostList());
         return  listToSort;
+    }
+
+
+    public DTO_Users getFriendsOfUser(DTO_User user) {
+
+        DTO_Users friends = null;
+        try
+        {
+            if(!session.isOpen())
+            {
+                session = HibernateUtil.getSessionFactory().openSession();
+            }
+            if(!emf.isOpen())
+            {
+                emf = Persistence.createEntityManagerFactory("TestPU");
+            }
+            if(!em.isOpen())
+            {
+                em = emf.createEntityManager();
+            }
+
+            if(!session.getTransaction().isActive())
+            {
+                session.beginTransaction();
+            }
+
+            DB_User userFromDB = getUserByUsername(user.getUsername());
+            if(userFromDB.getFriends() != null)
+            {
+                friends = new DTO_Users();
+                for (DB_User friend : userFromDB.getFriends())
+                {
+                    friends.addUser(friend.getUsername());
+                }
+            }
+        }catch (Exception e){e.printStackTrace();session.getTransaction().rollback();}
+        finally {
+            if(session.isOpen()){session.close();}
+            if(em.isOpen()){em.close();}
+            if(emf.isOpen()){emf.close();}
+        }
+
+        return friends;
     }
 }

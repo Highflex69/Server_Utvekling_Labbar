@@ -83,7 +83,7 @@ public class UserPage {
             }
             else if(result == 2)
             {
-                return Response.status(200).entity("already_friend").build();
+                return Response.status(299).entity("already_friend").build();
             }
         }
         return Response.status(500).entity(RESULT_FAILURE).build();

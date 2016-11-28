@@ -28,16 +28,23 @@ public class DB_User {
     @Column( name = "C_PASSWORD", nullable = false)
     private String password;
 
-    @OneToMany()
-    @JoinColumn(name = "C_FRIENDS")
-    private List<DB_User> friends;
+    @ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable(name = "T_FRIENDS",
+            joinColumns = {@JoinColumn(name = "C_USER_ID")},
+            inverseJoinColumns={@JoinColumn(name = "C_FRIENd_ID")})
+    private List<DB_User> friends = null;
+
+    @ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable(name = "T_FRIENDS",
+            joinColumns = {@JoinColumn(name = "C_FRIENd_ID")},
+            inverseJoinColumns={@JoinColumn(name = "C_USER_ID")})
+    private List<DB_User> friendOf = null;
 
     public DB_User(String name, String username, String password)
     {
         this.name = name;
         this.username = username;
         this.password = password;
-        this.friends = new ArrayList<DB_User>();
     }
 
     public DB_User() {
@@ -91,4 +98,14 @@ public class DB_User {
     public void setFriends(List<DB_User> friends) {
         this.friends = friends;
     }
+
+    public List<DB_User> getFriendOf() {
+        return friendOf;
+    }
+
+    public void setFriendOf(List<DB_User> friendOf) {
+        this.friendOf = friendOf;
+    }
+
+
 }

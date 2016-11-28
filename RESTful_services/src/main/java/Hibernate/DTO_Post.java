@@ -10,9 +10,9 @@ import java.io.Serializable;
 public class DTO_Post implements Serializable, Comparable<DTO_Post>{
     private int id;
     private String content;
-    private int author;
+    private String author;
 
-    public DTO_Post(int id, String content, int author)
+    public DTO_Post(int id, String content, String author)
     {
         this.id = id;
         this.content = content;
@@ -27,7 +27,7 @@ public class DTO_Post implements Serializable, Comparable<DTO_Post>{
         return content;
     }
 
-    public int getAuthor() {
+    public String getAuthor() {
         return author;
     }
 
