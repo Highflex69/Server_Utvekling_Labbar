@@ -29,6 +29,10 @@ public class DB_Manager {
         int result = -1;
         try
         {
+            if(!session.isOpen())
+            {
+                session = HibernateUtil.getSessionFactory().openSession();
+            }
             DB_User newUser = new DB_User(name, username, password);
             session.beginTransaction();
             session.save(newUser);
@@ -88,6 +92,33 @@ public class DB_Manager {
         return result;
     }
 
+    public boolean sendChatMessageByUser(DTO_ChatMessage chatMsg, DTO_User user)
+    {
+        boolean result = false;
+
+        try
+        {
+            if(!session.isOpen())
+            {
+                session = HibernateUtil.getSessionFactory().openSession();
+            }
+            DB_ChatMessage newChatMsg = new DB_ChatMessage(chatMsg.getDate(), chatMsg.getUser(), chatMsg.getMessage());
+            session.beginTransaction();
+            session.save(newChatMsg);
+            session.getTransaction().commit();
+            result = true;
+        }
+        catch (Exception e){e.printStackTrace();session.getTransaction().rollback();}
+        finally {
+            session.close();
+        }
+        return result;
+    }
+
+
+
+
+
     public boolean removeFriendWithIdFromUser(String friendUsername, String username)
     {
         boolean result = false;
@@ -95,24 +126,7 @@ public class DB_Manager {
         {
             DB_User currentUser = getUserByUsername(username);
             DB_User friend = getUserByUsername(friendUsername);
-            if(!session.isOpen())
-            {
-                session = HibernateUtil.getSessionFactory().openSession();
-            }
-            if(!emf.isOpen())
-            {
-                emf = Persistence.createEntityManagerFactory("TestPU");
-            }
-            if(!em.isOpen())
-            {
-                em = emf.createEntityManager();
-            }
-
-            if(!session.getTransaction().isActive())
-            {
-                session.beginTransaction();
-            }
-
+            initConnections();
 
             int size = currentUser.getFriends().size();
             for(int i=0;i<size;i++)
@@ -138,25 +152,9 @@ public class DB_Manager {
         }
         catch (Exception e){e.printStackTrace();session.getTransaction().rollback();}
         finally {
-            if(session.isOpen()){session.close();}
-            if(em.isOpen()){em.close();}
-            if(emf.isOpen()){emf.close();}
+            closeConnections();
         }
         return result;
-    }
-
-
-
-    public boolean verifyUser(String username, String password)
-    {
-        System.out.println("verifying user");
-        DTO_User user = getUserByNameAndPassword(username, password);
-
-        if(user != null)
-        {
-            return true;
-        }
-        return false;
     }
 
     public DTO_User getUserByNameAndPassword(String username, String password)
@@ -176,9 +174,7 @@ public class DB_Manager {
         }catch (Exception e) {e.printStackTrace(); session.getTransaction().rollback();}
         finally
         {
-            if(session.isOpen()){session.close();}
-            if(em.isOpen()){em.close();}
-            if(emf.isOpen()){emf.close();}
+            closeConnections();
         }
 
         return userToReturn;
@@ -200,23 +196,7 @@ public class DB_Manager {
         System.out.println("get user by username");
         DB_User user = null;
         try{
-            if(!session.isOpen())
-            {
-                session = HibernateUtil.getSessionFactory().openSession();
-            }
-            if(!emf.isOpen())
-            {
-                emf = Persistence.createEntityManagerFactory("TestPU");
-            }
-            if(!em.isOpen())
-            {
-                em = emf.createEntityManager();
-            }
-
-            if(!session.getTransaction().isActive())
-            {
-                session.beginTransaction();
-            }
+           initConnections();
             System.out.println("searchUsername = " + username);
             user =  (DB_User) em.createQuery(
                     "from DB_User user where user.username = :searchUsername")
@@ -225,9 +205,7 @@ public class DB_Manager {
         }catch (Exception e) {e.printStackTrace();session.getTransaction().rollback();}
         finally
         {
-            session.close();
-            em.close();
-            emf.close();
+            closeConnections();
         }
         return user;
     }
@@ -237,17 +215,9 @@ public class DB_Manager {
 
         DTO_Log logs = new DTO_Log();
         try{
-            if(!session.isOpen())
-            {
-                session = HibernateUtil.getSessionFactory().openSession();
-                emf = Persistence.createEntityManagerFactory("TestPU");
-                em = emf.createEntityManager();
-            }
             List<DB_Post> logList;
-            if(!session.getTransaction().isActive())
-            {
-                session.beginTransaction();
-            }
+            initConnections();
+
             logList = (List<DB_Post>) em.createQuery(
                     "from DB_Post post where post.authorId.id = :searchId")
                     .setParameter("searchId", id)
@@ -259,9 +229,7 @@ public class DB_Manager {
             }
         }catch (Exception e){e.printStackTrace();session.getTransaction().rollback();}
         finally {
-            session.close();
-            em.close();
-            emf.close();
+            closeConnections();
         }
         return logs;
     }
@@ -272,24 +240,9 @@ public class DB_Manager {
 
         DTO_Messages messages = new DTO_Messages();
         try{
-            if(!session.isOpen())
-            {
-                session = HibernateUtil.getSessionFactory().openSession();
-            }
-            if(!emf.isOpen())
-            {
-                emf = Persistence.createEntityManagerFactory("TestPU");
-            }
-            if(!em.isOpen())
-            {
-                em = emf.createEntityManager();
-            }
-
             List<DB_Message> msgList;
-            if(!session.getTransaction().isActive())
-            {
-                session.beginTransaction();
-            }
+            initConnections();
+
             msgList = (List<DB_Message>) em.createQuery(
                     "from DB_Message msg where msg.to.id = :searchId")
                     .setParameter("searchId", id)
@@ -301,10 +254,7 @@ public class DB_Manager {
             }
         }catch (Exception e){e.printStackTrace();session.getTransaction().rollback();}
         finally {
-
-            session.close();
-            em.close();
-            emf.close();
+            closeConnections();
         }
         return messages;
     }
@@ -313,23 +263,7 @@ public class DB_Manager {
 
         DB_Message message = null;
         try{
-            if(!session.isOpen())
-            {
-                session = HibernateUtil.getSessionFactory().openSession();
-            }
-            if(!emf.isOpen())
-            {
-                emf = Persistence.createEntityManagerFactory("TestPU");
-            }
-            if(!em.isOpen())
-            {
-                em = emf.createEntityManager();
-            }
-
-            if(!session.getTransaction().isActive())
-            {
-                session.beginTransaction();
-            }
+            initConnections();
 
             message = (DB_Message) em.createQuery(
                     "from DB_Message msg where msg.id = :searchId")
@@ -338,10 +272,7 @@ public class DB_Manager {
             return message;
         }catch (Exception e){e.printStackTrace();session.getTransaction().rollback();}
         finally {
-
-            if(session.isOpen()){session.close();}
-            if(em.isOpen()){em.close();}
-            if(emf.isOpen()){emf.close();}
+            closeConnections();
         }
         return message;
     }
@@ -368,22 +299,7 @@ public class DB_Manager {
         try
         {
             DB_Message message = getMessageById(readToMessageById);
-            if(!session.isOpen())
-            {
-                session = HibernateUtil.getSessionFactory().openSession();
-            }
-            if(!emf.isOpen())
-            {
-                emf = Persistence.createEntityManagerFactory("TestPU");
-            }
-            if(!em.isOpen())
-            {
-                em = emf.createEntityManager();
-            }
-            if(!session.getTransaction().isActive())
-            {
-                session.beginTransaction();
-            }
+            initConnections();
 
             message.setRead();
             session.saveOrUpdate(message);
@@ -391,9 +307,7 @@ public class DB_Manager {
         }
         catch (Exception e){e.printStackTrace();session.getTransaction().rollback();}
         finally {
-            if(session.isOpen()){session.close();}
-            if(em.isOpen()){em.close();}
-            if(emf.isOpen()){emf.close();}
+            closeConnections();
         }
         return result;
     }
@@ -402,22 +316,7 @@ public class DB_Manager {
         DTO_Users allUsers = null;
         try
         {
-            if(!session.isOpen())
-            {
-                session = HibernateUtil.getSessionFactory().openSession();
-            }
-            if(!emf.isOpen())
-            {
-                emf = Persistence.createEntityManagerFactory("TestPU");
-            }
-            if(!em.isOpen())
-            {
-                em = emf.createEntityManager();
-            }
-            if(!session.getTransaction().isActive())
-            {
-                session.beginTransaction();
-            }
+            initConnections();
 
             List<DB_User> userList = (List<DB_User>) em.createQuery(
                     "from DB_User").getResultList();
@@ -432,9 +331,7 @@ public class DB_Manager {
             }
         }catch (Exception e){e.printStackTrace();session.getTransaction().rollback();}
         finally {
-            if(session.isOpen()){session.close();}
-            if(em.isOpen()){em.close();}
-            if(emf.isOpen()){emf.close();}
+            closeConnections();
         }
         return allUsers;
     }
@@ -473,13 +370,8 @@ public class DB_Manager {
         if(!alreadyFriend)
         {
             try{
-                if(!session.isOpen())
-                {
-                    session = HibernateUtil.getSessionFactory().openSession();
-                    emf = Persistence.createEntityManagerFactory("TestPU");
-                    em = emf.createEntityManager();
-                }
-                session.beginTransaction();
+                initConnections();
+               // session.beginTransaction();
 
                 user.addFriend(friend);
                 friend.addFriend(user);
@@ -489,9 +381,7 @@ public class DB_Manager {
                 result = 1;
             }catch (Exception e){result = -1; e.printStackTrace(); session.getTransaction().rollback();}
             finally {
-                session.close();
-                em.close();
-                emf.close();
+                closeConnections();
             }
         }
 
@@ -503,22 +393,7 @@ public class DB_Manager {
         DTO_Message result = null;
 
         try{
-            if(!session.isOpen())
-            {
-                session = HibernateUtil.getSessionFactory().openSession();
-            }
-            if(!emf.isOpen())
-            {
-                emf = Persistence.createEntityManagerFactory("TestPU");
-            }
-            if(!em.isOpen())
-            {
-                em = emf.createEntityManager();
-            }
-            if(!session.getTransaction().isActive())
-            {
-                session.beginTransaction();
-            }
+            initConnections();
 
             DB_Message message = (DB_Message) em.createQuery(
                     "from DB_Message msg where msg.id = :searchId")
@@ -539,10 +414,7 @@ public class DB_Manager {
             }
         }catch (Exception e){e.printStackTrace();session.getTransaction().rollback();}
         finally {
-
-            session.close();
-            em.close();
-            emf.close();
+            closeConnections();
         }
         return result;
     }
@@ -553,23 +425,7 @@ public class DB_Manager {
         try
         {
             DB_User currentUser = getUserByUsername(user.getUsername());
-            if(!session.isOpen())
-            {
-                session = HibernateUtil.getSessionFactory().openSession();
-            }
-            if(!emf.isOpen())
-            {
-                emf = Persistence.createEntityManagerFactory("TestPU");
-            }
-            if(!em.isOpen())
-            {
-                em = emf.createEntityManager();
-            }
-
-            if(!session.getTransaction().isActive())
-            {
-                session.beginTransaction();
-            }
+           initConnections();
 
             List<DB_User> friendList = currentUser.getFriends();
             if(friendList!=null)
@@ -591,9 +447,7 @@ public class DB_Manager {
 
         }catch (Exception e){e.printStackTrace();session.getTransaction().rollback();}
         finally {
-            if(session.isOpen()){session.close();}
-            if(em.isOpen()){em.close();}
-            if(emf.isOpen()){emf.close();}
+            closeConnections();
         }
         return stream;
     }
@@ -610,23 +464,7 @@ public class DB_Manager {
         DTO_Users friends = null;
         try
         {
-            if(!session.isOpen())
-            {
-                session = HibernateUtil.getSessionFactory().openSession();
-            }
-            if(!emf.isOpen())
-            {
-                emf = Persistence.createEntityManagerFactory("TestPU");
-            }
-            if(!em.isOpen())
-            {
-                em = emf.createEntityManager();
-            }
-
-            if(!session.getTransaction().isActive())
-            {
-                session.beginTransaction();
-            }
+            initConnections();
 
             DB_User userFromDB = getUserByUsername(user.getUsername());
             if(userFromDB.getFriends() != null)
@@ -639,11 +477,70 @@ public class DB_Manager {
             }
         }catch (Exception e){e.printStackTrace();session.getTransaction().rollback();}
         finally {
-            if(session.isOpen()){session.close();}
-            if(em.isOpen()){em.close();}
-            if(emf.isOpen()){emf.close();}
+            closeConnections();
         }
-
         return friends;
     }
+
+    public DTO_ChatMessage getChatMessageAndRemoveIt(long lastUpdate) {
+        DTO_ChatMessage chatMessage = null;
+        try
+        {
+            initConnections();
+            List<DB_ChatMessage> chatMsgList = (List<DB_ChatMessage>) em.createQuery(
+                    "from DB_ChatMessage msg").getResultList();
+
+            if(chatMsgList !=null)
+            {
+                for(DB_ChatMessage db_ChatMsg : chatMsgList)
+                {
+                    if(lastUpdate <= db_ChatMsg.getDate())
+                    {
+                        chatMessage = new DTO_ChatMessage(db_ChatMsg.getDate(), db_ChatMsg.getUsername(), db_ChatMsg.getMessage());
+                        break;
+                    }
+                }
+            }
+        }catch (Exception e){e.printStackTrace();session.getTransaction().rollback();}
+        finally {
+            closeConnections();
+        }
+        return chatMessage;
+    }
+
+
+
+
+
+
+
+    private void initConnections()
+    {
+        if(!session.isOpen())
+        {
+            session = HibernateUtil.getSessionFactory().openSession();
+        }
+        if(!emf.isOpen())
+        {
+            emf = Persistence.createEntityManagerFactory("TestPU");
+        }
+        if(!em.isOpen())
+        {
+            em = emf.createEntityManager();
+        }
+
+        if(!session.getTransaction().isActive())
+        {
+            session.beginTransaction();
+        }
+    }
+
+    private void closeConnections()
+    {
+        if(session.isOpen()){session.close();}
+        if(em.isOpen()){em.close();}
+        if(emf.isOpen()){emf.close();}
+    }
+
+
 }
