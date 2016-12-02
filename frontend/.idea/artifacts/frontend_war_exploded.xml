@@ -11,6 +11,7 @@
           <element id="library" level="project" name="Mojarra-2.2.1" />
           <element id="library" level="project" name="com.google.code.gson:gson:2.8.0" />
           <element id="library" level="project" name="org.codehaus.jettison:jettison:1.1" />
+          <element id="library" level="project" name="PrimeFaces-5.2" />
         </element>
       </element>
     </root>
