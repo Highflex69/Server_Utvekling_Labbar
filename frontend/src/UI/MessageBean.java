@@ -12,7 +12,7 @@ import java.util.ArrayList;
 public class MessageBean {
     private String title;
     private String content;
-    private String from;
+    private int idFrom;
     private String to;
     private ArrayList<DTO_Message> inboxList1;
 
@@ -36,12 +36,12 @@ public class MessageBean {
         this.content = content;
     }
 
-    public String getIdFrom() {
-        return from;
+    public int getIdFrom() {
+        return idFrom;
     }
 
-    public void setIdFrom(String from) {
-        this.from = from;
+    public void setIdFrom(int idFrom) {
+        this.idFrom = idFrom;
     }
 
     public String getTo() {
@@ -74,8 +74,8 @@ public class MessageBean {
     }
 
     public DTO_Message getDTO() {
-        System.out.println("title: " +title + " content: " +content + " to: " +to + "from " +from);
-        return new DTO_Message(-1 ,title, content, to, from, false);
+        System.out.println("title: " +title + " content: " +content + " to: " +to + "idFrom " +idFrom);
+        return new DTO_Message(-1 ,title, content, to, idFrom, false);
     }
 
     public String parseListToXhtml(DTO_Messages mList) {

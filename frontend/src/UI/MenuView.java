@@ -36,14 +36,8 @@ public class MenuView {
             sb.append("<form action=\"write_message.xhtml\" method=\"get\"><input type=\"submit\" name=\"writemessages\" value=\"Write Message\" /></form>");
             //My Log
             sb.append("<form action=\"mylog.xhtml\" method=\"get\"><input type=\"submit\" name=\"mylog\" value=\"My Log\" /></form>");
-            //My friends
-            sb.append("<form action=\"myfriends.xhtml\" method=\"get\"><input type=\"submit\" name=\"myfriends\" value=\"Friends\" /></form>");
             //Search for users
             sb.append("<form action=\"search.xhtml\" method=\"get\"><input type=\"submit\" name=\"search\" value=\"Search\" /></form>");
-            //Chat button
-            sb.append("<form action=\"chat.xhtml\" method=\"get\"><input type=\"submit\" name=\"chat\" value=\"Chat\" /></form>");
-            //Logout button
-            sb.append("<form action=\"logout.xhtml\" method=\"get\"><input type=\"submit\" name=\"logout\" value=\"Logout\" /></form>");
             return sb.toString();
         }
 
