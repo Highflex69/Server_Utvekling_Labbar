@@ -9,11 +9,7 @@
 <f:view>
 
     <h:outputLabel value="#{userBean.menu}" escape="false"/>
-    <c:forEach var="m" items="#{userBean.allMessages}" >
-        <h:form>
-            <h:outputLabel>#{m.title}</h:outputLabel>
-            <h:commandButton id="knapp#{m.id}" value="Read" action="display_message.xhtml" />
-        </h:form>
-    </c:forEach>
+    <br />
+    <h:outputText value="#{userBean.messages}" escape="false" />
 </f:view>
 </html>

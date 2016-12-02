@@ -6,7 +6,11 @@
       xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
       xmlns:f="http://xmlns.jcp.org/jsf/core">
 <f:view>
-    <h:outputLabel value="#{userBean.menu}" escape="false"/>
-    <h:outputLabel value="Hello, world"/>
+    <h:body>
+        <h:outputLabel value="#{userBean.doLogout}" escape="false"/>
+        <h:form>
+            <h:commandButton id="knapp" value="Login" action="login.xhtml"/>
+        </h:form>
+    </h:body>
 </f:view>
 </html>

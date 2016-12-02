@@ -6,6 +6,7 @@
       xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
       xmlns:f="http://xmlns.jcp.org/jsf/core">
 <f:view>
-    <h:outputLabel value="#{userBean.getUser}"/>
+    <h:outputText value="#{userBean.menu}" escape="false" />
+    <h:outputLabel value="#{userBean.userLog}" escape="false"/>
 </f:view>
 </html>

@@ -21,7 +21,9 @@ import javax.faces.context.FacesContext;
 @SessionScoped
 public class UserBean {
 
-    public static final String urlpath = "http://172.16.83.82:8080/RESTful_services_war";
+
+    public static final String urlpath = "http://172.16.83.82:8080/rest";
+    //public static final String urlpath = "http://130.229.136.133:8080";
 
     private int id;
     @ManagedProperty("#{username}")
@@ -35,6 +37,7 @@ public class UserBean {
     private MessageBean messageBean;
     private DTO_Messages inboxList;
     private ArrayList<DTO_Message> allMessages;
+    DTO_Users friendsList;
 
     public MessageBean getMessageBean() {
         return messageBean;
@@ -72,12 +75,6 @@ public class UserBean {
         this.name = name;
     }
 
-    public ArrayList<DTO_Message> getAllMessages() {
-        if(allMessages == null){
-            allMessages = getMessages();
-        }
-        return allMessages;
-    }
 
     public void setAllMessages(ArrayList<DTO_Message> allMessages) {
         this.allMessages = allMessages;
@@ -92,7 +89,7 @@ public class UserBean {
         menuView = new MenuView();
         //inboxList = null;
         messageBean = new MessageBean();
-
+        friendsList = new DTO_Users();
 
     }
 
@@ -243,8 +240,10 @@ public class UserBean {
         System.out.println("Details: " + detailsBean.toString());
         return redirectValue;
     }
-    public void doLogout(){
+    public String getDoLogout(){
+
         FacesContext.getCurrentInstance().getExternalContext().invalidateSession();
+        return "You have been logged out";
     }
 
     public String getWelcomeMessage() {
@@ -420,7 +419,7 @@ public class UserBean {
             OutputStreamWriter out = new OutputStreamWriter(
                     httpCon.getOutputStream());
 
-            messageBean.setIdFrom(id);
+            messageBean.setIdFrom(username);
 
             DTO_Message message = messageBean.getDTO();
 
@@ -468,6 +467,7 @@ public class UserBean {
      *  Navigation-menu
      */
     public String getMenu() {
+        System.out.println("GetMenu(), username is: "  +username);
         return menuView.getNavigationMenu();
     }
 
@@ -485,7 +485,7 @@ public class UserBean {
      */
 
 
-    public ArrayList<DTO_Message> getMessages() {
+    public String getMessages() {
         //Return to ui
         String messages = "";
 
@@ -517,20 +517,28 @@ public class UserBean {
                         Gson gson = new Gson();
                         inboxList = gson.fromJson(line, DTO_Messages.class);
                         System.out.println("Messages received, size: " +inboxList.getMessagesList().size());
-                        //messageBean.setInboxList(inboxList.getMessagesList());
+                        StringBuilder sb = new StringBuilder();
+                        for(DTO_Message m: inboxList.getMessagesList()) {
+                            if(!m.isRead()){sb.append("<b>");}
+                            sb.append("<a href=display_message.xhtml?id=" +m.getId() +">");
+                                sb.append(m.getTitle());
+                            sb.append("</a>");
+                            if(!m.isRead()){sb.append("</b>");}
+                            sb.append("<br />");
+                            messages = sb.toString();
+                        }
                     }
                     break;
             }
         }catch (Exception e) {
 
             e.printStackTrace();
-        }
-        finally {
-            if(br != null) { try{br.close();} catch (Exception e){} }
-            if(inputStream != null) try{inputStream.close();} catch (Exception e){}
+        }finally {
+            if(inputStream!=null)try { inputStream.close();}catch (Exception e){}
+            if(inputStream!=null)try { inputStream.close();}catch (Exception e){}
         }
 
-        return inboxList.getMessagesList();
+        return messages;
     }
 
     /**
@@ -546,20 +554,29 @@ public class UserBean {
         int messageId = -1;
         DTO_Message readMessage = null;
         System.out.println("Testing... " +username);
-        /*
+
+
         try {
-            messageId = Integer.parseInt(id);
+            FacesContext fcontext = FacesContext.getCurrentInstance();
+            Map<String, String> map = fcontext.getExternalContext().getRequestParameterMap();
+            String mId = map.get("id");
+
+
+            messageId = Integer.parseInt(mId);
 
         }catch (Exception e) {
             return "Error: id is not a integer.";
-        }*/
+        }
+        if(messageId < 0) {
+            return "Message id cannot be negative number";
+        }
 
         System.out.println("Message id: " +messageId);
 
-
+        InputStream inputStream = null;
+        BufferedReader br = null;
         try {
-            InputStream inputStream = null;
-            BufferedReader br = null;
+
             URL url = new URL(urlpath + "/MessagePage/GetMessage");
             HttpURLConnection httpCon = (HttpURLConnection) url.openConnection();
             httpCon.setDoOutput(true);
@@ -568,7 +585,7 @@ public class UserBean {
             OutputStreamWriter out = new OutputStreamWriter(
                         httpCon.getOutputStream());
             System.out.println(username + " " +password +" " +messageId);
-            out.write("username=carlos" + "&password=test123" +"&messageId=13");
+            out.write("username=" +username +"&password=" +password +"&messageId=" +messageId);
             out.close();
 
             int responseCode = httpCon.getResponseCode();
@@ -592,6 +609,9 @@ public class UserBean {
         } catch (Exception e) {
 
             return "Error: message not found.";
+        }finally {
+            if(inputStream!=null)try { inputStream.close();}catch (Exception e){}
+            if(inputStream!=null)try { inputStream.close();}catch (Exception e){}
         }
 
         return messageBody;
@@ -600,6 +620,54 @@ public class UserBean {
     /**
      * Get all users from database and display with link to each users log in xhtml format
      */
+
+    public String getAddFriend() {
+        String addedFriend = "Could not add friend";
+
+        FacesContext fcontext = FacesContext.getCurrentInstance();
+        Map<String, String> map = fcontext.getExternalContext().getRequestParameterMap();
+        String friendName = map.get("username");
+        System.out.println("Friend to be added: " +friendName);
+        try {
+            InputStream inputStream = null;
+            BufferedReader br = null;
+            URL url = new URL(urlpath + "/UserPage/AddFriend");
+            HttpURLConnection httpCon = (HttpURLConnection) url.openConnection();
+            httpCon.setDoOutput(true);
+            httpCon.setRequestMethod("POST");
+
+            OutputStreamWriter out = new OutputStreamWriter(
+                    httpCon.getOutputStream());
+            out.write("username=" + username + "&password=" +password +"&friendusername=" + friendName);
+            out.close();
+            int responseCode = httpCon.getResponseCode();
+            System.out.println("Responsecode: " + responseCode);
+
+            inputStream = httpCon.getInputStream();
+            br = null;
+            switch (responseCode) {
+                case 200:
+                    br = new BufferedReader(new InputStreamReader(inputStream));
+                    String line = br.readLine();
+                    if (line == null) {
+                        return "Server responses with null or fail";
+                    }
+                    else if(line.equals("success")) {
+                        System.out.println("Add friend is success");
+                        friendsList.getUserList().add(friendName);
+                        addedFriend = "Friend " +friendName +" is added to your friendslist. <br />";
+                    }
+                    else {
+                        System.out.println("Response: " +line);
+                    }
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return addedFriend;
+    }
+
     public String getAllUsers() {
         DTO_Users allUsers = null;
         String displayUsers = "";
@@ -626,15 +694,23 @@ public class UserBean {
                     br = new BufferedReader(new InputStreamReader(inputStream));
                     String line = br.readLine();
                     Gson gson = new Gson();
-                    if (line == null || !line.equals("success")) {
+                    if (line == null) {
                         return "Server responses with null or fail";
                     }
                     allUsers = gson.fromJson(line, DTO_Users.class);
                     ArrayList<String> userList = allUsers.getUserList();
+                    System.out.println("Users size: " +userList.size());
                     StringBuilder sb = new StringBuilder();
                     for(String u: userList) {
-                        sb.append("<a href=\"display_user.xhtml\"?username="+u +"\"><br />");
+                        System.out.println(u);
+                        if(!u.equals(username)) {
+                            sb.append("<a href=\"display_user.xhtml?username=" + u + "\">" + u + "</a>");
+                            sb.append("    ");
+                            sb.append("<a href=\"addfriend.xhtml?username=" + u +"\">Add as friend</a>");
+                            sb.append("<br />");
+                        }
                     }
+                    displayUsers = sb.toString();
                     break;
             }
 
@@ -645,5 +721,215 @@ public class UserBean {
         return displayUsers;
     }
 
+    /**
+     * Get log that belongs to a specified user
+     */
+    public String getUserLog() {
+        String userLog = "Could not find user";
+
+        FacesContext fcontext = FacesContext.getCurrentInstance();
+        Map<String, String> map = fcontext.getExternalContext().getRequestParameterMap();
+        String userQuery = map.get("username");
+        try {
+            InputStream inputStream = null;
+            BufferedReader br = null;
+            URL url = new URL(urlpath + "/UserPage/GetUserLog");
+            HttpURLConnection httpCon = (HttpURLConnection) url.openConnection();
+            httpCon.setDoOutput(true);
+            httpCon.setRequestMethod("POST");
+
+            OutputStreamWriter out = new OutputStreamWriter(
+                    httpCon.getOutputStream());
+            out.write("username=" + username + "&password=" +password +"&searchforusername=" + userQuery);
+            out.close();
+            int responseCode = httpCon.getResponseCode();
+            System.out.println("Responsecode: " + responseCode);
+
+            inputStream = httpCon.getInputStream();
+            br = null;
+            switch (responseCode) {
+                case 200:
+                    br = new BufferedReader(new InputStreamReader(inputStream));
+                    String line = br.readLine();
+                    Gson gson = new Gson();
+                    if (line == null) {
+                        return "Server responses with null or fail";
+                    }
+                    DTO_Log retreivedLogs = gson.fromJson(line, DTO_Log.class);
+                    ArrayList<DTO_Post> logEntries = retreivedLogs.getPostList();
+                    StringBuilder sb = new StringBuilder();
+                    for(DTO_Post p: logEntries) {
+                        System.out.println(p.getContent());
+                        sb.append(p.getContent() + "<br/>");
+                    }
+                    userLog = sb.toString();
+                    break;
+            }
+
+        } catch (Exception e) {
+
+        }
+        return userLog;
+    }
+
+    /**
+     * Get all friends of a user
+     */
+    public String getFriendList() {
+        String userFriends = "You have no friends";
+
+        InputStream inputStream = null;
+        BufferedReader br = null;
+        try {
+            URL url = new URL(urlpath + "/MyPage/GetFriends");
+            HttpURLConnection httpCon = (HttpURLConnection) url.openConnection();
+            httpCon.setDoOutput(true);
+            httpCon.setRequestMethod("POST");
+
+            OutputStreamWriter out = new OutputStreamWriter(
+                    httpCon.getOutputStream());
+            out.write("username=" + username + "&password=" +password);
+            out.close();
+            int responseCode = httpCon.getResponseCode();
+            System.out.println("Responsecode: " + responseCode);
+
+            inputStream = httpCon.getInputStream();
+            br = null;
+            switch (responseCode) {
+                case 200:
+                    br = new BufferedReader(new InputStreamReader(inputStream));
+                    String line = br.readLine();
+                    Gson gson = new Gson();
+                    if (line == null) {
+                        return "Server responses with null or fail";
+                    }
+                    DTO_Users friendL = gson.fromJson(line, DTO_Users.class);
+
+                    friendsList = friendL;
+                    System.out.println("Size is: " +friendsList.getUserList().size());
+
+                    ArrayList<String> friends = friendL.getUserList();
+
+                    StringBuilder sb = new StringBuilder();
+                    System.out.println("Size: " +friends.size());
+                    for(int i = 0; i < friends.size(); i++) {
+                        sb.append(friends.get(i));
+                        sb.append("<a href=\"removefriend.xhtml?username=" + friends.get(i)+"\"" + ">Remove Friend</a>");
+                        sb.append("<br />");
+
+                    }
+                    userFriends = sb.toString();
+                    break;
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+
+        }finally {
+            //if(inputStream!=null)try { inputStream.close();}catch (Exception e){}
+            //if(inputStream!=null)try { inputStream.close();}catch (Exception e){}
+        }
+        return userFriends;
+    }
+
+    public String getRemoveFriend() {
+        String removedFriend = "Could not remove user";
+
+        FacesContext fcontext = FacesContext.getCurrentInstance();
+        Map<String, String> map = fcontext.getExternalContext().getRequestParameterMap();
+        String friendName = map.get("username");
+        try {
+            InputStream inputStream = null;
+            BufferedReader br = null;
+            URL url = new URL(urlpath + "/UserPage/RemoveFriend");
+            HttpURLConnection httpCon = (HttpURLConnection) url.openConnection();
+            httpCon.setDoOutput(true);
+            httpCon.setRequestMethod("POST");
+
+            OutputStreamWriter out = new OutputStreamWriter(
+                    httpCon.getOutputStream());
+            out.write("username=" + username + "&password=" +password +"&friendusername=" + friendName);
+            out.close();
+            int responseCode = httpCon.getResponseCode();
+            System.out.println("Responsecode: " + responseCode);
+
+            inputStream = httpCon.getInputStream();
+            br = null;
+            switch (responseCode) {
+                case 200:
+                    br = new BufferedReader(new InputStreamReader(inputStream));
+                    String line = br.readLine();
+                    if (line == null) {
+                        return "Server responses with null or fail";
+                    }
+                    if(line.equals("success")) {
+                        ArrayList<String> list = friendsList.getUserList();
+                        for(int i = 0; i < list.size(); i++) {
+                            String u = list.get(i);
+                            list.remove(i);
+                            removedFriend = "Friend " +u +"is removed from your friendslist. <br />";
+                            break;
+                        }
+                    }
+            }
+
+        } catch (Exception e) {
+        e.printStackTrace();
+        }
+        return removedFriend;
+    }
+
+    public String getMyFlow() {
+        String flow = "No Logs to show";
+        System.out.println("In getMyFlow()");
+        InputStream inputStream = null;
+        BufferedReader br = null;
+        try {
+            URL url = new URL(urlpath + "/MyPage/GetStream");
+            HttpURLConnection httpCon = (HttpURLConnection) url.openConnection();
+            httpCon.setDoOutput(true);
+            httpCon.setRequestMethod("POST");
+
+            OutputStreamWriter out = new OutputStreamWriter(
+                    httpCon.getOutputStream());
+            out.write("username=" + username + "&password=" +password);
+            out.close();
+            int responseCode = httpCon.getResponseCode();
+            System.out.println("Get flow, Responsecode: " + responseCode);
+
+            inputStream = httpCon.getInputStream();
+            br = null;
+            switch (responseCode) {
+                case 200:
+                    br = new BufferedReader(new InputStreamReader(inputStream));
+                    String line = br.readLine();
+                    Gson gson = new Gson();
+                    if (line == null) {
+                        return "Server responses with null or fail";
+                    }
+                    DTO_Log stream = gson.fromJson(line, DTO_Log.class);
+
+                    ArrayList<DTO_Post> postList = stream.getPostList();
+                    StringBuilder sb = new StringBuilder();
+                    System.out.println("Postsize: " +postList.size());
+                    for(DTO_Post p: postList) {
+                        sb.append(p.getAuthor() +":<br />");
+                        sb.append(p.getContent());
+                        sb.append("<br />");
+
+                    }
+                    flow = sb.toString();
+                    break;
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+
+        }finally {
+            if(inputStream!=null)try { inputStream.close();}catch (Exception e){}
+            if(br!=null)try { br.close();}catch (Exception e){}
+        }
+        return flow;
+    }
 
 }

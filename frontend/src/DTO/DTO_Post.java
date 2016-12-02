@@ -2,12 +2,12 @@ package DTO;
 
 import java.io.Serializable;
 
-public class DTO_Post implements Serializable{
+public class DTO_Post implements Serializable, Comparable<DTO_Post>{
     private int id;
     private String content;
-    private int author;
+    private String author;
 
-    public DTO_Post(int id, String content, int author)
+    public DTO_Post(int id, String content, String author)
     {
         this.id = id;
         this.content = content;
@@ -22,6 +22,17 @@ public class DTO_Post implements Serializable{
         return content;
     }
 
-    public int getAuthor(){ return author;}
+    public String getAuthor(){ return author;}
 
+    @Override
+    public int compareTo(DTO_Post dto_post) {
+        if(this.id == dto_post.getId()){
+            return 0;
+        }
+        else if(this.id < dto_post.getId()) {
+            return 1;
+        }
+
+        return -1;
+    }
 }
