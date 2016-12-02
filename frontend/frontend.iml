@@ -23,5 +23,6 @@
     <orderEntry type="library" scope="PROVIDED" name="Tomcat 9.0.0.M10" level="application_server_libraries" />
     <orderEntry type="library" name="org.codehaus.jettison:jettison:1.1" level="project" />
     <orderEntry type="library" name="com.google.code.gson:gson:2.8.0" level="project" />
+    <orderEntry type="library" name="PrimeFaces-5.2" level="project" />
   </component>
 </module>
