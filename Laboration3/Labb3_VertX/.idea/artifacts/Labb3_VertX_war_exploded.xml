@@ -1,0 +1,28 @@
+<component name="ArtifactManager">
+  <artifact type="exploded-war" name="Labb3_VertX:war exploded">
+    <output-path>$PROJECT_DIR$/target/vertexlabb</output-path>
+    <root id="root">
+      <element id="directory" name="WEB-INF">
+        <element id="directory" name="classes">
+          <element id="module-output" name="Labb3_VertX" />
+        </element>
+        <element id="directory" name="lib">
+          <element id="library" level="project" name="Maven: io.vertx:vertx-core:3.0.0" />
+          <element id="library" level="project" name="Maven: io.netty:netty-common:4.0.28.Final" />
+          <element id="library" level="project" name="Maven: io.netty:netty-buffer:4.0.28.Final" />
+          <element id="library" level="project" name="Maven: io.netty:netty-transport:4.0.28.Final" />
+          <element id="library" level="project" name="Maven: io.netty:netty-handler:4.0.28.Final" />
+          <element id="library" level="project" name="Maven: io.netty:netty-codec:4.0.28.Final" />
+          <element id="library" level="project" name="Maven: io.netty:netty-codec-http:4.0.28.Final" />
+          <element id="library" level="project" name="Maven: com.fasterxml.jackson.core:jackson-core:2.5.3" />
+          <element id="library" level="project" name="Maven: com.fasterxml.jackson.core:jackson-databind:2.5.3" />
+          <element id="library" level="project" name="Maven: com.fasterxml.jackson.core:jackson-annotations:2.5.0" />
+        </element>
+      </element>
+      <element id="directory" name="META-INF">
+        <element id="file-copy" path="$PROJECT_DIR$/target/vertexlabb/META-INF/MANIFEST.MF" />
+      </element>
+      <element id="javaee-facet-resources" facet="Labb3_VertX/web/Web" />
+    </root>
+  </artifact>
+</component>

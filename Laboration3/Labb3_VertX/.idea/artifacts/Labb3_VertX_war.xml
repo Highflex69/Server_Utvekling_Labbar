@@ -1,0 +1,8 @@
+<component name="ArtifactManager">
+  <artifact type="war" name="Labb3_VertX:war">
+    <output-path>$PROJECT_DIR$/target</output-path>
+    <root id="archive" name="vertexlabb.war">
+      <element id="artifact" artifact-name="Labb3_VertX:war exploded" />
+    </root>
+  </artifact>
+</component>
