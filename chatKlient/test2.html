@@ -1,0 +1,40 @@
+<script type="text/javascript">
+	var host = "ws://130.229.185.116:8080/chat";
+	var wSocket = new WebSocket(host);
+	var msg = "OPEN teddy test123 carlos";
+	function init() {
+		wSocket.onopen = function()
+		{
+			wSocket.send(msg);
+		};
+		wSocket.onerror = function()
+		{
+			alert("Fel!");
+		};
+		}
+
+		// called when a message is received
+		wSocket.onmessage = function(event) {
+			var received_msg = event.data;
+			document.getElementById("chat").value = received_msg;
+			alert(received_msg);
+		};
+		// called when socket closes
+		wSocket.onclose = function() {
+		alert("Connection is closed...");
+	};
+	function sendMessage() {
+		var msg = document.getElementById("sendText").value;
+		wSocket.send("SEND teddy carlos " +msg);
+	};
+</script>
+
+<body onload="init()">
+	Hej
+	<form id="tjo">
+		<input type="text" id="sendText"/>
+		<textarea id="chat"></textarea>
+		<button type='button' onclick="sendMessage()">Send</button>
+	</form>
+	
+</body>
