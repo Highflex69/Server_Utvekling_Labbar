@@ -7,7 +7,6 @@
           <element id="module-output" name="Labb3_VertX" />
         </element>
         <element id="directory" name="lib">
-          <element id="library" level="project" name="Maven: io.vertx:vertx-core:3.0.0" />
           <element id="library" level="project" name="Maven: io.netty:netty-common:4.0.28.Final" />
           <element id="library" level="project" name="Maven: io.netty:netty-buffer:4.0.28.Final" />
           <element id="library" level="project" name="Maven: io.netty:netty-transport:4.0.28.Final" />
@@ -17,6 +16,13 @@
           <element id="library" level="project" name="Maven: com.fasterxml.jackson.core:jackson-core:2.5.3" />
           <element id="library" level="project" name="Maven: com.fasterxml.jackson.core:jackson-databind:2.5.3" />
           <element id="library" level="project" name="Maven: com.fasterxml.jackson.core:jackson-annotations:2.5.0" />
+          <element id="library" level="project" name="Maven: org.slf4j:slf4j-api:1.6.2" />
+          <element id="library" level="project" name="Maven: com.fasterxml.jackson.core:jackson-databind:2.2.2" />
+          <element id="library" level="project" name="Maven: com.fasterxml.jackson.core:jackson-annotations:2.2.2" />
+          <element id="library" level="project" name="Maven: com.fasterxml.jackson.core:jackson-core:2.2.2" />
+          <element id="library" level="project" name="Maven: io.netty:netty-all:4.0.21.Final" />
+          <element id="library" level="project" name="Maven: log4j:log4j:1.2.16" />
+          <element id="library" level="project" name="io.vertx:vertx-platform:2.1.5" />
         </element>
       </element>
       <element id="directory" name="META-INF">
