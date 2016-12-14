@@ -1,5 +1,6 @@
 import {Component} from "angular2/core";
-import {$WebSocket} from 'angular2-websocket/angular2-websocket';
+
+
 @Component({
   selector: "shopping-list",
   template:`
@@ -15,8 +16,14 @@ import {$WebSocket} from 'angular2-websocket/angular2-websocket';
     <button (click)="onAddItem(shoppingListItem)">Add item</button>
   `
 })
+
 export class ShoppingListComponent{
 
+  wSocket:WebSocket;
+   constructor()
+   {
+     this.wSocket = new WebSocket("ws://localhost:8080/chat");
+   }
 
   public shoppingListItems = [
     {name: "Milk"},
@@ -26,22 +33,22 @@ export class ShoppingListComponent{
   public selectedItem = {name: ""};
   onItemClicked(shoppingListItem) {
     this.selectedItem = shoppingListItem;
-    var wSocket = new $WebSocket("ws://localhost:8080/chat");
-    
-    wSocket.send("OPEN carlos test123 teddy");
+
+    this.wSocket.onopen = function()
+    {
+      this.wSocket.send("OPEN carlos test123 teddy");
+    };
     console.log("OnItemClicked");
   }
 
   onAddItem(shoppingListItem) {
     this.shoppingListItems.push({name: shoppingListItem.value});
 
-
-    //var host = "ws://130.229.171.11:8080/chat";
-
-    //var wSocket = new $WebSocket(host);
   }
 
   onDeleteItem() {
     this.shoppingListItems.splice(this.shoppingListItems.indexOf(this.selectedItem), 1);
   }
 }
+
+

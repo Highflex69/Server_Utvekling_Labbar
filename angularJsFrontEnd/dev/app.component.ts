@@ -1,13 +1,25 @@
 import {Component} from 'angular2/core';
-import {ShoppingListComponent} from "./shopping-list.component";
-import {Connection} from "./app.connection";
+import {ChatService} from './chat.service';
+import {Chat} from './chat.component';
+import {CreateMessage} from './create-message.componet';
+import {WebSocketService} from './websocket.service';
+
 
 @Component({
-    selector: 'my-app',
-    template: `<shopping-list></shopping-list>
+    selector: 'My-app',
+    template: `
+      <div class="wrapper">
+        <navbar>
+        </navbar>
+        
+        <chat></chat>
+        <create-message></create-message> 
+       </div>
     `,
-  directives: [ShoppingListComponent]
+  directives: [Chat, CreateMessage],
+  providers: [ChatService, WebSocketService],
 })
+
 export class AppComponent {
 /*
   constructor(private _connection: Connection)
