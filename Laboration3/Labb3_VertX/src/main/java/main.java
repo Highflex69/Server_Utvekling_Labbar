@@ -73,6 +73,7 @@ public class main extends AbstractVerticle {
                 //test end
             }
 
+            System.out.println("Session in OPEN: " + getSessionFromUsers(users));
             LocalMap<String,String> localMap = vertx.sharedData().getLocalMap(getSessionFromUsers(users));
             localMap.put("id2",userSocketId);
 
@@ -82,14 +83,16 @@ public class main extends AbstractVerticle {
 
             String[] msgArr = message.body().toString().split(" ");
             String users = msgArr[0]+" "+msgArr[1];
-            StringBuilder msgbuilder = new StringBuilder();
-            msgbuilder.append(msgArr[0]+":");
-
+            StringBuilder content = new StringBuilder();
             for(int i=2;i<msgArr.length;i++)
             {
-                msgbuilder.append(" "+msgArr[i]);
+                content.append(msgArr[i]+" ");
             }
 
+            StringBuilder msgbuilder = new StringBuilder();
+            msgbuilder.append("{\"from\":\""+msgArr[0]+"\",\"to\":\""+msgArr[1]+"\","+"\"content\":\""+msgArr[0]+": "+content.toString()+"\"}");
+            System.out.println("Session in SEND: " + getSessionFromUsers(users));
+            //System.out.println(msgbuilder.toString());
            eb.send(getSessionFromUsers(users), msgbuilder.toString());
         });
         createChatPage();
@@ -124,9 +127,13 @@ public class main extends AbstractVerticle {
                     serverWebSocket.handler(new Handler<Buffer>() {
                         @Override
                         public void handle(Buffer data) {
-                            System.out.println("got data(in /chat): " + data.toString());
+                            System.out.println("*****"+data.toString());
+                            String content = getContentFromJson(data.toString());
+
+                            //System.out.println("got data(in /chat): " + content);
+
                             vertx.executeBlocking(objectFuture -> {
-                                String[] dataStr = data.toString().split(" ");
+                                String[] dataStr = content.toString().split(" ");
                                 String msg = "";
                                 for(int i=1;i<dataStr.length;i++)
                                 {
@@ -135,11 +142,12 @@ public class main extends AbstractVerticle {
                                 switch (dataStr[0])
                                 {
                                     case "OPEN":
+                                        System.out.println("in OPEN");
                                         msg = msg.concat(serverWebSocket.textHandlerID());
                                         eb.send("registerclient", msg);
                                         break;
                                     case "SEND":
-
+                                        System.out.println("in SEND");
                                         eb.send("sendmessage", msg);
                                         break;
                                     default:
@@ -161,5 +169,25 @@ public class main extends AbstractVerticle {
             }
         }).listen(8080);
     }
+
+    private String getContentFromJson(String data)
+    {
+        String[] result = data.split(",");
+        String content = "";
+        for(int i=0;i<result.length;i++)
+        {
+            result[i] = result[i].replace("\"", "");
+            String[] tmp = result[i].split(":");
+            //System.out.println("tmp:" + tmp[0]);
+            if(tmp[0].equals("content"))
+            {
+                content = tmp[1].replace("}","");
+            }
+
+        }
+        return content;
+    }
+
+
 
 }
