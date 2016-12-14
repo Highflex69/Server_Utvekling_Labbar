@@ -23,6 +23,7 @@ export class ChatService{
       .connect(CHAT_URL)
       .map((response: MessageEvent): Message =>{
 
+        console.log("response: "+response.data);
         let data = JSON.parse(response.data);
 
         return{

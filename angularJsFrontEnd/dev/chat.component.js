@@ -22,7 +22,7 @@ var Chat = (function () {
     Chat = __decorate([
         core_1.Component({
             selector: 'chat',
-            template: '<div class = "messages"> <p *ngFor="#msg of messages; #last = last">{{ msg.message }}</p> </div>',
+            template: '<div class = "messages"> <p *ngFor="#msg of messages; #last = last">{{ msg.content }}</p> </div>',
             directives: [],
             providers: [chat_service_1.ChatService]
         })

@@ -12,6 +12,7 @@ var ChatService = (function () {
         this.messages = wsService
             .connect(CHAT_URL)
             .map(function (response) {
+            console.log("response: " + response.data);
             var data = JSON.parse(response.data);
             return {
                 from: data.from,
