@@ -10,7 +10,6 @@ import {Subject} from 'rxjs/Rx';
   template: '<div class = "messages"> <p *ngFor="#msg of messages; #last = last">{{ msg.content }}</p> </div>',
   directives: [],
   providers: [ChatService]
-
 })
 
 export class Chat{

@@ -6,7 +6,7 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
     return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
 var core_1 = require('angular2/core');
-var CHAT_URL = "ws://130.229.171.11:8080/chat";
+var CHAT_URL = "ws://130.229.171.11:8081/chat";
 var ChatService = (function () {
     function ChatService(wsService) {
         this.messages = wsService

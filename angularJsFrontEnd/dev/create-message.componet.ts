@@ -37,7 +37,7 @@ export class CreateMessage{
   private message = {
     from: 'gogo',
     to: 'meme',
-    content: ' ',
+    content: '',
   }
 
   constructor(private chatService: ChatService)

@@ -1,29 +1,33 @@
 import {Component} from 'angular2/core';
-import {ChatService} from './chat.service';
-import {Chat} from './chat.component';
-import {CreateMessage} from './create-message.componet';
-import {WebSocketService} from './websocket.service';
+import {RouteConfig, ROUTER_DIRECTIVES} from "angular2/router";
+import {LoginChat} from './login-chat.component';
+import {VertXChat} from "./vertx-chat.component";
 
 
 @Component({
     selector: 'My-app',
     template: `
-      <div class="wrapper">
-        <navbar>
-        </navbar>
-        
-        <chat></chat>
-        <create-message></create-message> 
-       </div>
+
+      <router-outlet [logininfo]="this.logininfo"></router-outlet>
+      
     `,
-  directives: [Chat, CreateMessage],
-  providers: [ChatService, WebSocketService],
+  directives: [ROUTER_DIRECTIVES],
+  providers: [],
 })
 
+@RouteConfig([
+  {path: '/chat', name:'Chat', component: VertXChat},
+  {path: '', name: 'Root', component: LoginChat, useAsDefault: true}
+])
+
+
 export class AppComponent {
-/*
-  constructor(private _connection: Connection)
+  username:string = "test";
+  password:string = "tes2";
+  logininfo:Array<string>;
+
+  constructor()
   {
-      _connection.send();
-  }*/
+    this.logininfo = [ this.username,this.password ]
+  }
 }

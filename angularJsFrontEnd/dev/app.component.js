@@ -6,20 +6,26 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
     return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
 var core_1 = require('angular2/core');
-var chat_service_1 = require('./chat.service');
-var chat_component_1 = require('./chat.component');
-var create_message_componet_1 = require('./create-message.componet');
-var websocket_service_1 = require('./websocket.service');
+var router_1 = require("angular2/router");
+var login_chat_component_1 = require('./login-chat.component');
+var vertx_chat_component_1 = require("./vertx-chat.component");
 var AppComponent = (function () {
     function AppComponent() {
+        this.username = "test";
+        this.password = "tes2";
+        this.logininfo = [this.username, this.password];
     }
     AppComponent = __decorate([
         core_1.Component({
             selector: 'My-app',
-            template: "\n      <div class=\"wrapper\">\n        <navbar>\n        </navbar>\n        \n        <chat></chat>\n        <create-message></create-message> \n       </div>\n    ",
-            directives: [chat_component_1.Chat, create_message_componet_1.CreateMessage],
-            providers: [chat_service_1.ChatService, websocket_service_1.WebSocketService]
-        })
+            template: "\n\n      <router-outlet [logininfo]=\"this.logininfo\"></router-outlet>\n      \n    ",
+            directives: [router_1.ROUTER_DIRECTIVES],
+            providers: []
+        }),
+        router_1.RouteConfig([
+            { path: '/chat', name: 'Chat', component: vertx_chat_component_1.VertXChat },
+            { path: '', name: 'Root', component: login_chat_component_1.LoginChat, useAsDefault: true }
+        ])
     ], AppComponent);
     return AppComponent;
 }());

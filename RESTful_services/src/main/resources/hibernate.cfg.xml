@@ -9,7 +9,7 @@
         <property name="connection.username">db_su</property>
         <property name="connection.password">test123</property>-->
 
-        <property name="connection.url">jdbc:mysql://130.229.143.168:3306/db_serverutveckling</property>
+        <property name="connection.url">jdbc:mysql://130.229.153.69:3306/db_serverutveckling</property>
         <property name="connection.driver_class">com.mysql.jdbc.Driver</property>
         <property name="connection.username">serverutveckling</property>
         <property name="connection.password">carlos</property>

@@ -17,7 +17,7 @@ var CreateMessage = (function () {
         this.message = {
             from: 'gogo',
             to: 'meme',
-            content: ' '
+            content: ''
         };
     }
     CreateMessage.prototype.onSubmit = function () {
