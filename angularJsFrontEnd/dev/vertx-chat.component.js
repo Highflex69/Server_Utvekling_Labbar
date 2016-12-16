@@ -14,15 +14,22 @@ var chat_component_1 = require('./chat.component');
 var create_message_componet_1 = require('./create-message.componet');
 var websocket_service_1 = require('./websocket.service');
 var VertXChat = (function () {
-    function VertXChat() {
+    function VertXChat(_userService) {
+        this._userService = _userService;
+        this.username = "asdf";
+        this.password = "asdf";
     }
+    VertXChat.prototype.ngOnInit = function () {
+        console.log("Constructor: user = " + this._userService.getUsername());
+        this.username = this._userService.getUsername();
+        this.password = this._userService.getPassword();
+    };
     VertXChat = __decorate([
         core_1.Component({
             selector: 'vertxchat',
-            template: "\n      <div class=\"wrapper\">\n        <navbar></navbar>\n        <chat></chat>\n        <create-message></create-message> \n       </div>\n    ",
+            template: "\n      <div class=\"wrapper\">\n      <p>{{username}}</p>\n        <navbar></navbar>\n        <chat></chat>\n        <create-message></create-message> \n       </div>\n    ",
             directives: [chat_component_1.Chat, create_message_componet_1.CreateMessage],
-            providers: [chat_service_1.ChatService, websocket_service_1.WebSocketService],
-            inputs: ['logininfo']
+            providers: [chat_service_1.ChatService, websocket_service_1.WebSocketService]
         })
     ], VertXChat);
     return VertXChat;

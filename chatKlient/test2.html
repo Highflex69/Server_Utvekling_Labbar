@@ -1,7 +1,7 @@
 <script type="text/javascript">
-	var host = "ws://130.229.185.116:8080/chat";
+	var host = "ws://130.229.171.11:8083/server";
 	var wSocket = new WebSocket(host);
-	var msg = "OPEN teddy test123 carlos";
+	var msg = "SEND teddy carlos hello";
 	function init() {
 		wSocket.onopen = function()
 		{

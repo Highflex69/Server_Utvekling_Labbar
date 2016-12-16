@@ -3,7 +3,7 @@
  */
 import {ChatService} from './chat.service';
 import {Component} from 'angular2/core';
-
+import {UserService} from './user.service';
 
   @Component({
     selector: 'create-message',
@@ -40,7 +40,7 @@ export class CreateMessage{
     content: '',
   }
 
-  constructor(private chatService: ChatService)
+  constructor(private chatService: ChatService, userService: UserService)
   {
 
   }

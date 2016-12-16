@@ -9,18 +9,18 @@ var core_1 = require('angular2/core');
 var router_1 = require("angular2/router");
 var login_chat_component_1 = require('./login-chat.component');
 var vertx_chat_component_1 = require("./vertx-chat.component");
+var user_service_1 = require("./user.service");
 var AppComponent = (function () {
     function AppComponent() {
         this.username = "test";
         this.password = "tes2";
-        this.logininfo = [this.username, this.password];
     }
     AppComponent = __decorate([
         core_1.Component({
-            selector: 'My-app',
-            template: "\n\n      <router-outlet [logininfo]=\"this.logininfo\"></router-outlet>\n      \n    ",
+            selector: 'my-app',
+            template: "\n\n      <router-outlet></router-outlet>\n      \n    ",
             directives: [router_1.ROUTER_DIRECTIVES],
-            providers: []
+            providers: [user_service_1.UserService]
         }),
         router_1.RouteConfig([
             { path: '/chat', name: 'Chat', component: vertx_chat_component_1.VertXChat },

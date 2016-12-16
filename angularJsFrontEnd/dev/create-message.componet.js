@@ -11,7 +11,7 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 var chat_service_1 = require('./chat.service');
 var core_1 = require('angular2/core');
 var CreateMessage = (function () {
-    function CreateMessage(chatService) {
+    function CreateMessage(chatService, userService) {
         this.chatService = chatService;
         this.submitted = false;
         this.message = {

@@ -2,35 +2,35 @@
  * Created by Teddy on 2016-12-15.
  */
 import {Component} from 'angular2/core';
-import {VertXChat} from './vertx-chat.component';
-import {RouteConfig, ROUTER_DIRECTIVES} from 'angular2/router';
-import {Observable} from "rxjs/Observable";
-import {AppComponent} from "./app.component";
+import {ROUTER_DIRECTIVES} from 'angular2/router';
+import {UserService} from "./user.service";
 
 @Component({
   selector: 'login-chat',
   template: `
       
       <div class="wrapper">
-        usermane: <input type="username"  >
-         password: <input type="password">
-         
-        {{AppComponent.logininfo}}
-        <button value="login"  [routerLink]="['Chat']">login </button>
+        usermane: <input type="text" [(ngModel)]="username">
+        password: <input type="text" [(ngModel)]="password">
+        <button value="login" (click)="setLogin(username, password)" [routerLink]="['Chat']">login </button>
        
        </div>
       
     `,
-  directives: [ROUTER_DIRECTIVES],
-  providers: [],
-  inputs: ['logininfo']
+  directives: [ROUTER_DIRECTIVES]
 })
+
 
 export class LoginChat{
   username = "";
   password = "";
 
-  login():string{
-    return "Chat";
+  constructor(private _userService: UserService) {}
+
+  setLogin(username:string, password:string) {
+    console.log("setLogin, u:" +username +" p:" +password);
+    this._userService.setPassword(password);
+    this._userService.setUsername(username);
   }
+
 }

@@ -6,7 +6,7 @@ var angular2_websocket_1 = require('angular2-websocket/angular2-websocket');
 //import WebSocket = require('ws');
 var Connection = (function () {
     function Connection() {
-        this.wSocket = new angular2_websocket_1.$WebSocket("ws://130.229.171.11:8080/chat");
+        this.wSocket = new angular2_websocket_1.$WebSocket("ws://130.229.171.11:8083/server");
         //var host = "ws://130.229.171.11:8080/chat";
         //var wSocket = new $WebSocket(host);
     }

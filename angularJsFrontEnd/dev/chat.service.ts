@@ -5,7 +5,7 @@ import {Observable, Subject} from 'rxjs/Rx';
 import {Injectable} from 'angular2/core';
 import {WebSocketService} from './websocket.service';
 
-const CHAT_URL = "ws://130.229.171.11:8081/chat";
+const CHAT_URL = "ws://130.229.171.11:8083/server";
 
 export interface Message{
     from: string;

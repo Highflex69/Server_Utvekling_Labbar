@@ -6,12 +6,15 @@ import {ChatService} from './chat.service';
 import {Chat} from './chat.component';
 import {CreateMessage} from './create-message.componet';
 import {WebSocketService} from './websocket.service';
+import {UserService} from "./user.service";
+import {Inject} from 'angular2/core';
 
 
 @Component({
   selector: 'vertxchat',
   template: `
       <div class="wrapper">
+      <p>{{username}}</p>
         <navbar></navbar>
         <chat></chat>
         <create-message></create-message> 
@@ -19,8 +22,20 @@ import {WebSocketService} from './websocket.service';
     `,
   directives: [Chat, CreateMessage],
   providers: [ChatService, WebSocketService],
-  inputs: ['logininfo']
+
 })
 
 export class VertXChat{
+  username:string = "asdf";
+  password:string= "asdf";
+
+
+  constructor(private _userService: UserService) {}
+
+  ngOnInit(){
+    console.log("Constructor: user = " +this._userService.getUsername());
+    this.username = this._userService.getUsername();
+    this.password = this._userService.getPassword();
+  }
+
 }

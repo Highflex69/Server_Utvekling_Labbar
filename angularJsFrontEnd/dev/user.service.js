@@ -6,25 +6,25 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
     return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
 var core_1 = require('angular2/core');
-var CHAT_URL = "ws://130.229.171.11:8083/server";
-var ChatService = (function () {
-    function ChatService(wsService) {
-        this.messages = wsService
-            .connect(CHAT_URL)
-            .map(function (response) {
-            console.log("response: " + response.data);
-            var data = JSON.parse(response.data);
-            return {
-                from: data.from,
-                to: data.to,
-                content: data.content
-            };
-        });
+var UserService = (function () {
+    function UserService() {
     }
-    ChatService = __decorate([
+    UserService.prototype.getUsername = function () {
+        return this.username;
+    };
+    UserService.prototype.getPassword = function () {
+        return this.username;
+    };
+    UserService.prototype.setUsername = function (username) {
+        this.username = username;
+    };
+    UserService.prototype.setPassword = function (password) {
+        this.password = password;
+    };
+    UserService = __decorate([
         core_1.Injectable()
-    ], ChatService);
-    return ChatService;
+    ], UserService);
+    return UserService;
 }());
-exports.ChatService = ChatService;
-//# sourceMappingURL=chat.service.js.map
+exports.UserService = UserService;
+//# sourceMappingURL=user.service.js.map

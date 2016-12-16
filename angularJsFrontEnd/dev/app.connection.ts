@@ -6,7 +6,7 @@ import {$WebSocket} from 'angular2-websocket/angular2-websocket';
 export class Connection{
   wSocket:$WebSocket;
   public constructor() {
-     this.wSocket = new $WebSocket("ws://130.229.171.11:8080/chat");
+     this.wSocket = new $WebSocket("ws://130.229.171.11:8083/server");
 
     //var host = "ws://130.229.171.11:8080/chat";
 
